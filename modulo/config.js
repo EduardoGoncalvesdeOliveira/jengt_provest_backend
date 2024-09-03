@@ -2,6 +2,7 @@
 * Objetivo: arquivo responsável pela configuração global de mensagens, valores e
 *           conteúdos para o projeto
 * Data: 03/09/2024
+
 * Autor: Gabriela Fernandes
 * Versão: 1.0
 ***************************************************************************************/

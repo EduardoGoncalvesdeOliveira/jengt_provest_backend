@@ -1,6 +1,7 @@
-/* Objetivo: criar uma api para responder os dados da empresa Leilão Expresso
-* Data: 28/05/2024
-* Autor: Gabriela Fernandes, Eduardo Gonçalves e Mariana Sousa
+/* Objetivo: criar uma api para responder os dados da empresa JENGT, no projeto
+/*           ProVest
+* Data: 03/09/2024
+* Autor: Gabriela Fernandes e Eduardo Gonçalves
 * Versão: 1.0
 *****************************************************************************/
 
