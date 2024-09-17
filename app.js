@@ -23,11 +23,26 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const controllerAluno = require('./controller/controller_alunos')
+// criando objeto app
+const app = express()
 
-app.listen(3306, function() {
-    console.log('API Funcionando e aguardando requisições')
+app.use((request, response, next) => {
+    response.header('Access-Control-Allow-Origin', '*')
+    response.header('Access-Control-Allow-Methods', '*')
+    app.use(cors())
+    // app.use(express.json());
+    next()
 })
+
+// cria um objeto do tipo JSON para receber os dados via body nas requisições POST ou PUT
+const bodyParserJSON = bodyParser.json()
+
+// #region IMPORTS
+/****************************** IMPORT DE CONTROLLERS ****************************/
+const controllerAluno = require('./controller/controller_alunos')
+const controllerProf = require('./controller/controller-prof')
+/*********************************************************************************/
+
 
 // #region ALUNO
 
@@ -116,3 +131,7 @@ app.get('/v1/jengt_provest/alunos', cors(), async(request, response, next) => {
 // })
 
 // /*************************************************************************/
+
+app.listen(3306, function() {
+    console.log('API Funcionando e aguardando requisições')
+})

@@ -25,8 +25,7 @@ const setNovoProfessor = async(dadosProf, contentType) => {
              if (dadosProf.nome == ''             || dadosProf.nome == undefined              || dadosProf.nome.length > 150       ||
                 dadosProf.email == ''             || dadosProf.email == undefined             || dadosProf.email.length > 256      ||
                 dadosProf.senha == ''             || dadosProf.senha == undefined             || dadosProf.senha.length > 32       ||
-                 dadosProf.cpf == ''              || dadosProf.cpf == undefined               || dadosProf.cpf.length > 11         ||
-                 dadosProf.icone_id == ''         || dadosProf.icone_id == undefined          || dadosProf.icone_id.length > 255 
+                dadosProf.icone_id == ''         || dadosProf.icone_id == undefined          || dadosProf.icone_id.length > 255 
                 ){
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
@@ -70,8 +69,6 @@ const setAtualizarProfessor = async (dadosProf, contentType, id) => {
 
             if (dadosProf.nome == ''             || dadosProf.nome == undefined              || dadosProf.nome.length > 150          ||
                 dadosProf.email == ''            || dadosProf.email == undefined             || dadosProf.email.length > 256         ||
-                dadosProf.telefone == ''         || dadosProf.telefone == undefined          || dadosProf.telefone.length > 12       ||
-                 dadosProf.cpf == ''             || dadosProf.cpf == undefined               || dadosProf.cpf.length > 11            ||
                  dadosProf.icone_id == ''        || dadosProf.icone_id == undefined          || dadosProf.icone_id.length > 255
                 ) {
                 return message.ERROR_REQUIRED_FIELDS // 400

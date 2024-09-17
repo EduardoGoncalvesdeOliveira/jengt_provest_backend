@@ -13,16 +13,12 @@ const message = require('../modulo/config.js')
 const setNovoAluno = async(dadosAluno, contentType) => {
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
-
             // cria a variável JSON
             let resultDadosAlunos = {}
-
-            console.log(dadosAluno);
 
              //Validação para verificar campos obrigatórios e conistência de dados
              if (dadosAluno.nome == ''             || dadosAluno.nome == undefined              || dadosAluno.nome.length > 100       ||
                 dadosAluno.email == ''             || dadosAluno.email == undefined             || dadosAluno.email.length > 120      ||
-                dadosAluno.telefone == ''          || dadosAluno.telefone == undefined          || dadosAluno.telefone.length > 12    ||
                 dadosAluno.senha == ''             || dadosAluno.senha == undefined             || dadosAluno.senha.length > 32){
                     
                  return message.ERROR_REQUIRED_FIELDS // 400
