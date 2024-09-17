@@ -23,13 +23,11 @@ const setNovoProfessor = async(dadosProf, contentType) => {
             console.log(dadosProf);
              //Validação para verificar campos obrigatórios e conistência de dados
              if (dadosProf.nome == ''             || dadosProf.nome == undefined              || dadosProf.nome.length > 150       ||
-                dadosProf.email == ''             || dadosProf.email == undefined             || dadosProf.email.length > 256       ||
-                dadosProf.telefone == ''          || dadosProf.telefone == undefined          || dadosProf.telefone.length > 12    ||
+                dadosProf.email == ''             || dadosProf.email == undefined             || dadosProf.email.length > 256      ||
                 dadosProf.senha == ''             || dadosProf.senha == undefined             || dadosProf.senha.length > 32       ||
-                 dadosProf.cpf == ''              || dadosProf.cpf == undefined || dadosProf.cpf.length > 11                       ||
-                 dadosProf.foto_perfil == ''      || dadosProf.foto_perfil == undefined       || dadosProf.foto_perfil.length > 255 ||
-                 dadosProf.endereco_id == ''      || dadosProf.endereco_id == undefined       || validacaoEndereco.status_code == false
-            ){
+                 dadosProf.cpf == ''              || dadosProf.cpf == undefined               || dadosProf.cpf.length > 11         ||
+                 dadosProf.icone_id == ''         || dadosProf.icone_id == undefined          || dadosProf.icone_id.length > 255 
+                ){
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
                 //envia os dados para o DAO inserir no BD
@@ -46,7 +44,7 @@ const setNovoProfessor = async(dadosProf, contentType) => {
                     resultDadosProfs.status = message.SUCCESS_CREATED_ITEM.status
                     resultDadosProfs.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     resultDadosProfs.message = message.SUCCESS_CREATED_ITEM.message
-                    resultDadosProfs.usuario = dadosProf
+                    resultDadosProfs.professor = dadosProf
                     return resultDadosProfs
                 } 
             }
@@ -70,13 +68,12 @@ const setAtualizarProfessor = async (dadosProf, contentType, id) => {
             // cria a variável JSON
             let resultDadosProfs = {}
 
-            if (dadosProf.nome == ''             || dadosProf.nome == undefined              || dadosProf.nome.length > 150             ||
-                dadosProf.email == ''            || dadosProf.email == undefined             || dadosProf.email.length > 256            ||
-                dadosProf.telefone == ''         || dadosProf.telefone == undefined          || dadosProf.telefone.length > 12          ||
-                 dadosProf.cpf == ''             || dadosProf.cpf == undefined               || dadosProf.cpf.length > 11               ||
-                 dadosProf.foto_perfil == ''     || dadosProf.foto_perfil == undefined       || dadosProf.foto_perfil.length > 255      ||
-                 dadosProf.endereco_id == ''     || dadosProf.endereco_id == undefined       || validacaoEndereco.status_code == false
-            ) {
+            if (dadosProf.nome == ''             || dadosProf.nome == undefined              || dadosProf.nome.length > 150          ||
+                dadosProf.email == ''            || dadosProf.email == undefined             || dadosProf.email.length > 256         ||
+                dadosProf.telefone == ''         || dadosProf.telefone == undefined          || dadosProf.telefone.length > 12       ||
+                 dadosProf.cpf == ''             || dadosProf.cpf == undefined               || dadosProf.cpf.length > 11            ||
+                 dadosProf.icone_id == ''        || dadosProf.icone_id == undefined          || dadosProf.icone_id.length > 255
+                ) {
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
                 
@@ -172,7 +169,7 @@ const getListarProfessores = async () => {
 
     if (dadosProfs) {
         if (dadosProfs.length > 0) {
-            professoresJSON.usuarios = dadosProfs
+            professoresJSON.professores = dadosProfs
             professoresJSON.qt = dadosProfs.length
             professoresJSON.status_code = 200
             return professoresJSON
@@ -186,7 +183,7 @@ const getListarProfessores = async () => {
 
 // get: função para buscar um professor pelo ID
 const getBuscarProfessor = async (id) => {
-    // recebe o id da GegetBuscarClassificacao
+    // recebe o id
     let idProf = id;
     let professoresJSON = {}
     
@@ -194,7 +191,7 @@ const getBuscarProfessor = async (id) => {
     if (idProf == '' || idProf == undefined || isNaN(idProf)) {
         return message.ERROR_INVALID_ID //400
     } else {
-        let dadosProf = await professorDAO.selectByIdProfessor(idUsuario)
+        let dadosProf = await professorDAO.selectByIdProfessor(idProf)
 
         if (dadosProf) {
             // validação para verificar se existem dados de retorno
@@ -240,9 +237,7 @@ const getProfessorByNome = async (nome) => {
 const setAtualizarProfSenha = async(dadosProf, contentType, idProf) => {
 
     try {
-        
         if(String(contentType).toLowerCase() == 'application/json'){
-
             let resultDadosProf = {}
         
             if( 
@@ -251,13 +246,9 @@ const setAtualizarProfSenha = async(dadosProf, contentType, idProf) => {
                 dadosProf.email == '' || dadosProf.email == undefined || dadosProf.email.length > 100 ||
                 dadosProf.senha == '' || dadosProf.senha == undefined || dadosProf.senha.length > 50 
             ){
-                
-                return message.ERROR_REQUIRED_FIELDS // 400
-                
+                return message.ERROR_REQUIRED_FIELDS // 400  
             }else{
-                
-                let usuarioAtualizado = await professorDAO.updateProfSenha(dadosProf, idProf)
-                                        
+                let profAtt = await professorDAO.updateProfSenha(dadosProf, idProf)                 
                 dadosProf.id = idProf
 
                 if(profAtt){
@@ -267,21 +258,15 @@ const setAtualizarProfSenha = async(dadosProf, contentType, idProf) => {
                     resultDadosProf.professor = dadosProf
                     return resultDadosProf
                 }else {
-
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
-
                 }
-                
             }
-    
         }else{
             return message.ERROR_CONTENT_TYPE // 415
         }
-
     } catch (error) {
         message.ERROR_INTERNAL_SERVER // 500
     }
-
 }
 
 const getValidarProf = async(email, senha, contentType) => {
