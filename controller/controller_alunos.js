@@ -1,6 +1,6 @@
 // objetivo: Arquivo responsavel pela interação entre o APP e o Model, que teremos todas as tratativas e regra de negocio para o crud de Usuarios
-// data: 03-09-24 - inicio
-// autor: Eduardo Goncalves de Oliveira
+// data: 03/09/2024 - inicio
+// autor: Eduardo Gonçalves de Oliveira
 // versao: 1.0
 
 // import do arquivo DAO para manipular dados do BD
