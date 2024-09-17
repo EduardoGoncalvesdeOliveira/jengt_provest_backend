@@ -23,17 +23,23 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-// // #region USUARIO
+const controllerAluno = require('./controller/controller_alunos')
 
-// /****************************** USUARIO ****************************/
-// // endpoints: listar os usuarios
-// app.get('/v1/leilao_expresso/usuarios', cors(), async(request, response, next) => {
-//     // chama a função para retornar os dados dos usuarios
-//     let dadosUsuarios = await controllerUsuarios.getListarUsuarios()
+app.listen(3306, function() {
+    console.log('API Funcionando e aguardando requisições')
+})
 
-//     response.status(dadosUsuarios.status_code)
-//     response.json(dadosUsuarios)
-// })
+// #region ALUNO
+
+/****************************** ALUNO ****************************/
+// endpoints: listar os usuarios
+app.get('/v1/jengt_provest/alunos', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados dos usuarios
+    let dadosAlunos = await controllerAluno.getListarAlunos()
+
+    response.status(dadosAlunos.status_code)
+    response.json(dadosAlunos)
+})
 
 // // endpoint: retorna os dados de usuarios, filtrando pelo ID
 // app.get('/v1/leilao_expresso/usuarios/:id', cors(), async(request, response, next) => {
