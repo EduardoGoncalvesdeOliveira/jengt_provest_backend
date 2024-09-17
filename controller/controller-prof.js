@@ -8,6 +8,7 @@
 
 // import do arquivo DAO para manipular dados do BD
 const professorDAO = require('../model/DAO/professor.js')
+const controllerIcone = require('./controller-icones.js')
 
 // import do arquivo de configuração do projeto
 const message = require('../modulo/config.js')
@@ -19,13 +20,13 @@ const setNovoProfessor = async(dadosProf, contentType) => {
 
             // cria a variável JSON
             let resultDadosProfs = {}
+            const icone = controllerIcone.getBuscarIcone(dadosProf.icone_id)
+            console.log(icone);
 
-            console.log(dadosProf);
              //Validação para verificar campos obrigatórios e conistência de dados
              if (dadosProf.nome == ''             || dadosProf.nome == undefined              || dadosProf.nome.length > 150       ||
                 dadosProf.email == ''             || dadosProf.email == undefined             || dadosProf.email.length > 256      ||
-                dadosProf.senha == ''             || dadosProf.senha == undefined             || dadosProf.senha.length > 32       ||
-                dadosProf.icone_id == ''         || dadosProf.icone_id == undefined          || dadosProf.icone_id.length > 255 
+                dadosProf.senha == ''             || dadosProf.senha == undefined             || dadosProf.senha.length > 32       
                 ){
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
