@@ -259,6 +259,7 @@ create table tbl_vest_fases
 						where id = 5;
 	update tbl_aluno set status = false where id = 5;
 	update tbl_aluno set status = true where id = 5;
+    update tbl_aluno set senha = "jogar" where id = 4;
                
 	-- get
     select * from tbl_cursos;
@@ -272,4 +273,9 @@ create table tbl_vest_fases
 			inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id order by nome asc;
 	select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso from tbl_aluno
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
-                    where tbl_aluno.id=6 and status=true;
+                    where tbl_aluno.id=4 and status=true;
+	select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso from tbl_aluno
+			inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
+            where tbl_aluno.nome like '%t%' and status=true;
+	select cast(last_insert_id() as DECIMAL) as id from tbl_aluno limit 1;
+    select nome, email from tbl_aluno where email = 'tamiressenaisp@gmail.com' and senha = "jogar";
