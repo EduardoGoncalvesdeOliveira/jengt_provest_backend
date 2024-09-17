@@ -1,7 +1,6 @@
 create database db_provest_jengt;
 
 use db_provest_jengt;
-aaaaaqaaa
 
 create table tbl_tema
 (
@@ -218,3 +217,59 @@ create table tbl_vest_fases
     foreign key (vestibular_id) references tbl_vestibulares(id),
     foreign key (fase_id) references tbl_fases(id)
 );
+
+-- CONSULTAS
+	-- insert
+    insert into tbl_cursos (nome)values(
+		'Análise e Desenvolvimento de Sistemas'
+    );
+    
+    insert into tbl_icones (url, status)values(
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9X9bMjDZakjD5pSqXrhpRuMtUlS4vAzR0Dg&s',
+               true
+               );
+               
+    insert into tbl_professor (nome, email, senha, icone_id, status)values(
+                "Arthur Lopes",
+                'arthurlopes160@gmail.com',
+                'tuco',
+                1,
+               true
+               );
+               
+               
+	insert into tbl_aluno (nome, email, senha, icone_id, curso_id, status)values(
+			'Nycolle Lima',
+			'nyck.lima01@gmail.com',
+			'aaaa',
+            '1',
+			'5',
+		   true
+		);
+		
+	-- update
+    update tbl_professor set 
+						nome = "Eduardinho"
+						where id = 2;
+	update tbl_professor set status = false where id = 2;
+	update tbl_professor set status = true where id = 2;
+    update tbl_professor set senha = 'matheus' where id = 2;
+	update tbl_aluno set 
+						curso_id = 2
+						where id = 5;
+	update tbl_aluno set status = false where id = 5;
+	update tbl_aluno set status = true where id = 5;
+               
+	-- get
+    select * from tbl_cursos;
+    select * from tbl_aluno;
+	select nome, email, senha from tbl_professor order by nome asc;
+    select nome, email, senha from tbl_professor where id=2 and status=true;
+    select * from tbl_professor where nome like '%ga%' and status=true;
+    select cast(last_insert_id() as DECIMAL) as id from tbl_professor limit 1;
+    select nome, email from tbl_professor where email='gabriela.cavalcanti886@gmail.com' and senha='hagrid'; 
+    select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso from tbl_aluno
+			inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id order by nome asc;
+	select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso from tbl_aluno
+                    inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
+                    where tbl_aluno.id=6 and status=true;
