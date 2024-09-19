@@ -65,7 +65,7 @@ const updateCurso = async(dadosCurso, id) => {
 const selectAllCursos = async () => {
 
     try {
-        let sql = `select id, nome from tbl_cursos order by nome asc`
+        let sql = `select id, nome from tbl_cursos order by id desc`
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
