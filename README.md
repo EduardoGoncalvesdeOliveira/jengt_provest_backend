@@ -44,3 +44,36 @@ link do render
 ```
 /v1/jengt_provest/aluno/:id
 ```
+<br>
+
+
+<h3> professores </h3>
+
+- listar todos 
+```
+/v1/jengt_provest/profs
+```
+- filtrar pelo nome 
+```
+/v1/jengt_provest/profs/filtro
+```
+- filtrando pelo ID
+```
+/v1/jengt_provest/prof/:id
+```
+- inserir
+```
+/v1/jengt_provest/prof
+```
+- editar o status para false para "exclui-lo"
+```
+/v1/jengt_provest/prof/excluir/:id
+```
+- editar o status para false para ativa-lo
+```
+/v1/jengt_provest/prof/ativar/:id
+```
+- editar
+```
+/v1/jengt_provest/prof/:id
+```
