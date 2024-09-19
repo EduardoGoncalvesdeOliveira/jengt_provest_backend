@@ -167,6 +167,20 @@ const getListarProfessores = async () => {
 
     if (dadosProfs) {
         if (dadosProfs.length > 0) {
+            const promise = dadosProfs.map(async(prof) => {
+                const disciplinas = await professorDAO.selectDisciplinasByProfId(prof.id)
+                if(disciplinas){
+                    let discArray = []
+                    disciplinas.forEach((disc) => {
+                        discArray.push(disc.nome)
+                    });
+                    prof.disciplinas = discArray
+                }
+
+            })
+
+            await Promise.all(promise)
+
             professoresJSON.professores = dadosProfs
             professoresJSON.qt = dadosProfs.length
             professoresJSON.status_code = 200
@@ -315,5 +329,5 @@ module.exports = {
    getBuscarProfessor,
    getProfessorByNome,
    setAtualizarProfSenha,
-   getValidarProf 
+   getValidarProf
 }

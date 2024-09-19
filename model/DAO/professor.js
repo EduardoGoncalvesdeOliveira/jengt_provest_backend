@@ -97,11 +97,26 @@ const updateRecoverProfessor = async(id) => {
     }
 }
 
+const selectDisciplinasByProfId = async(id) => {
+    try {
+        let sql = `select td.nome from tbl_disciplina as td
+                        inner join tbl_prof_disciplinas as tpd on td.id=tpd.disciplina_id
+                        where tpd.professor_id = ${id}`
+
+        // executa o scriptSQL no BD e recebe o retorno dos dados na variável
+        let rsDiscProf = await prisma.$queryRawUnsafe(sql)
+        return rsDiscProf
+    } catch (error) {
+        return false
+    }
+
+}
+
 // get: listar todos os profs
 const selectAllProfessores = async () => {
 
     try {
-        let sql = 'select nome, email, senha from tbl_professor where status=true order by nome asc'
+        let sql = 'select id, nome, email from tbl_professor where status=true order by nome asc'
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
@@ -201,5 +216,6 @@ module.exports={
     selectByNome,
     selectLastId,
     updateProfSenha,
-    selectValidacaoProf
+    selectValidacaoProf,
+    selectDisciplinasByProfId
 }
