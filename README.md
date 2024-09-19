@@ -14,33 +14,33 @@ link do render
 ```
 
 
-<h3> admin </h3>
+<h3> aluno </h3>
 
 - listar todos 
 ```
-/v1/leilao_expresso/admins
+/v1/jengt_provest/alunos
 ```
 - filtrar pelo nome 
 ```
-/v1/leilao_expresso/admins/filtro
+/v1/jengt_provest/alunos/filtro
 ```
 - filtrando pelo ID
 ```
-/v1/leilao_expresso/admin/:id
+/v1/jengt_provest/aluno/:id
 ```
 - inserir
 ```
-/v1/leilao_expresso/admin
+/v1/jengt_provest/aluno
 ```
 - editar o status para false para "exclui-lo"
 ```
-/v1/leilao_expresso/admin/excluir/:id
+/v1/jengt_provest/aluno/excluir/:id
 ```
 - editar o status para false para ativa-lo
 ```
-/v1/leilao_expresso/admin/ativar/:id
+/v1/jengt_provest/aluno/ativar/:id
 ```
 - editar
 ```
-/v1/leilao_expresso/admin/:id
+/v1/jengt_provest/aluno/:id
 ```
