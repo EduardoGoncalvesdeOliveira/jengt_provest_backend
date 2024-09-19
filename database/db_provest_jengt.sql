@@ -262,8 +262,10 @@ create table tbl_vest_fases
     update tbl_aluno set senha = "jogar" where id = 4;
                
 	-- get
+    use db_provest_jengt;
     select * from tbl_cursos;
     select * from tbl_aluno;
+    alter table tbl_professor modify senha varchar(32);
 	select nome, email, senha from tbl_professor order by nome asc;
     select nome, email, senha from tbl_professor where id=2 and status=true;
     select * from tbl_professor where nome like '%ga%' and status=true;

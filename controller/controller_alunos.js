@@ -21,7 +21,6 @@ const setNovoAluno = async(dadosAluno, contentType) => {
             let valIcone = await controllerIcone.getBuscarIcone(dadosAluno.icone_id)
             let valCurso = await controllerCurso.getBuscarCurso(dadosAluno.curso_id)
 
-            console.log(resultDadosAlunos);
              //Validação para verificar campos obrigatórios e conistência de dados
              if (dadosAluno.nome == ''             || dadosAluno.nome == undefined              || dadosAluno.nome.length > 100         ||
                 dadosAluno.email == ''             || dadosAluno.email == undefined             || dadosAluno.email.length > 120        ||
@@ -91,7 +90,14 @@ const setAtualizarAluno = async (dadosAluno, contentType, id) => {
                     resultDadosAluno.status = message.SUCCESS_UPDATED_ITEM.status
                     resultDadosAluno.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                     resultDadosAluno.message = message.SUCCESS_UPDATED_ITEM.message
-                    resultDadosAluno.aluno = dadosAluno
+                    resultDadosAluno.aluno = {
+                        id: Number(id[0].id),
+                        nome: dadosAluno.nome,
+                        email: dadosAluno.email,
+                        senha: dadosAluno.senha,
+                        curso: valCurso.curso[0],
+                        icone: valIcone.icone[0],
+                    }
 
                     return resultDadosAluno
                 } else {
@@ -105,7 +111,8 @@ const setAtualizarAluno = async (dadosAluno, contentType, id) => {
         }
 
     } catch (error) {
-console.log(error);
+        console.log(error);
+        
         return message.ERROR_INTERNAL_SERVER // 500
     }
 }
@@ -124,7 +131,7 @@ const setEditarExcluirAluno = async (id) => {
         }else {
 
             //envia os dados para a model inserir no BD
-            resultDadosAluno = await usuarioDAO.setEditarExcluirUsuario(usuario)
+            resultDadosAluno = await alunoDAO.updateDeleteAluno(aluno)
             //Valida se o BD inseriu corretamente os dados
             if (resultDadosAluno)
                 return message.SUCCESS_DELETED_ITEM // 200
@@ -134,6 +141,7 @@ const setEditarExcluirAluno = async (id) => {
         }
         
     } catch (error) {
+        console.log(error);
         message.ERROR_INTERNAL_SERVER // 500
     }
 }
@@ -238,7 +246,7 @@ const getAlunoByNome = async (nome) => {
 const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
     try { 
         if(String(contentType).toLowerCase() == 'application/json'){
-            let resultDadosUsuario = {}
+            let resultDadosAluno = {}
         
             if(dadosAluno.email == ''  || dadosAluno.email == undefined || dadosAluno.email.length > 100 ||
                 dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 50 
@@ -249,11 +257,11 @@ const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
                 dadosAluno.id = idAluno
 
                 if(alunoAtualizado){
-                    resultDadosUsuario.status = message.UPDATED_ITEM.status
-                    resultDadosUsuario.status_code = message.UPDATED_ITEM.status_code
-                    resultDadosUsuario.message = message.UPDATED_ITEM.message
-                    resultDadosUsuario.aluno = dadosAluno
-                    return resultDadosUsuario
+                    resultDadosAluno.status = message.UPDATED_ITEM.status
+                    resultDadosAluno.status_code = message.UPDATED_ITEM.status_code
+                    resultDadosAluno.message = message.UPDATED_ITEM.message
+                    resultDadosAluno.aluno = dadosAluno
+                    return resultDadosAluno
                 }else {
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
                 }
@@ -278,9 +286,8 @@ const getValidarAluno = async(email, senha, contentType) => {
             if(emailAluno == '' || emailAluno == undefined || senhaAluno == '' || senhaAluno == undefined){
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
-                let dadosAluno = await usuarioDAO.selectValidacaoUsuario(emailAluno, senhaAluno)
+                let dadosAluno = await alunoDAO.selectValidacaoAluno(emailAluno, senhaAluno)
 
-                console.log(dadosAluno);
                 if(dadosAluno){
                     if(dadosAluno.length > 0){         
                         let aluno = dadosAluno
