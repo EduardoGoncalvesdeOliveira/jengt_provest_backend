@@ -28,15 +28,16 @@ const insertProfessor = async(dadosProf) => {
         // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
         // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
         let result = await prisma.$executeRawUnsafe(sql)
-
+    
         // validação para verificar se o insert funcionou no DB
         if(result){
             return true
         } else {
             return false
         }
-
+        
     } catch (error) {
+        console.log(error);
         return false
     }
 }
@@ -49,11 +50,10 @@ const updateProfessor = async(dadosProf, id) => {
         sql = `update tbl_professor set 
                                             nome = "${dadosProf.nome}",
                                             email = "${dadosProf.email}",
-                                            icone_id = "${dadosProf.icone_id}",
+                                            icone_id = "${dadosProf.icone_id}"
                                             where id = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
-
 
         // validação para verificar se o insert funcionou no DB
         if(result){
@@ -63,6 +63,8 @@ const updateProfessor = async(dadosProf, id) => {
         }
     
     } catch (error) {
+        console.log(error);
+        
         return false
     }
 }
@@ -114,19 +116,18 @@ const selectDisciplinasByProfId = async(id) => {
 
 // get: listar todos os profs
 const selectAllProfessores = async () => {
-
     try {
-        let sql = 'select id, nome, email from tbl_professor where status=true order by nome asc'
+        let sql = 'select id, nome, email, senha, status from tbl_professor order by id desc'
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
         let rsProf = await prisma.$queryRawUnsafe(sql)
-
         return rsProf
-
+        
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -137,7 +138,7 @@ const selectByIdProfessor = async (id) => {
     try {
 
         // realiza a busca do prof pelo id
-        let sql = `select * from tbl_professor where id=${id} and status=true`
+        let sql = `select id, nome, email, senha from tbl_professor where id=${id} and status=true`
 
         // executa no DBA o script SQL
         let rsProf = await prisma.$queryRawUnsafe(sql)
@@ -152,7 +153,7 @@ const selectByIdProfessor = async (id) => {
 const selectByNome = async (nome) => {
     
     try {
-        let sql = `select * from tbl_professor where nome like '%${nome}%' and status=true`
+        let sql = `select id, nome, email, senha, status from tbl_professor where nome like '%${nome}%' and status=true`
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
         let rsProf = await prisma.$queryRawUnsafe(sql)
