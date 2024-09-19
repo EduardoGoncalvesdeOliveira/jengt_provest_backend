@@ -219,18 +219,6 @@ app.put('/v1/jengt_provest/prof/:id', cors(), bodyParserJSON, async(request, res
 })
 /*************************************************************************/
 
-// #region CURSO
-
-/****************************** CURSO ****************************/
-// endpoints: listar os cursos
-app.get('/v1/jengt_provest/cursos', cors(), async(request, response, next) => {
-    // chama a função para retornar os dados do admin
-    let dadosAlunos = await controllerAluno.getListarAlunos()
-
-    response.status(dadosAlunos.status_code)
-    response.json(dadosAlunos)
-})
-
 app.listen(8080, function() {
     console.log('API Funcionando e aguardando requisições')
 })
