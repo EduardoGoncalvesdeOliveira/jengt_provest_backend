@@ -105,10 +105,10 @@ const updateRecoverAluno = async(id) => {
 const selectAllAlunos = async () => {
 
     try {
-        let sql = `select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_cursos.nome as curso, tbl_aluno.status 
+        let sql = `select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status 
                     from tbl_aluno 
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
-                    order by nome asc`
+                    order by id desc`
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
@@ -129,7 +129,7 @@ const selectByIdAluno = async (id) => {
     try {
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
+        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
                     where tbl_aluno.id=${id}`
 
@@ -147,7 +147,7 @@ const selectByIdAluno = async (id) => {
 const selectByNome = async (nome) => {
     
     try {
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
+        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
                     where tbl_aluno.nome like '%${nome}%' and status=true`
 
@@ -196,7 +196,7 @@ const updateAlunoSenha = async (dadosAluno, idAluno) => {
 const selectValidacaoAluno = async (email, senha) => {
 
     try {
-        let sql = `select nome, email from tbl_aluno where email = '${email}' and senha = md5('${senha}')`
+        let sql = `select nome, email, senha, from tbl_aluno where email = '${email}' and senha = md5('${senha}')`
         let rsAluno = await prisma.$queryRawUnsafe(sql)
         return rsAluno        
     } catch (error) {
