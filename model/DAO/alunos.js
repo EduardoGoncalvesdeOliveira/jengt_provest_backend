@@ -25,10 +25,11 @@ const insertAluno = async(dadosAluno) => {
                 '${dadosAluno.curso_id}',
                true
             )`
-
-        // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
-        // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
-        let result = await prisma.$executeRawUnsafe(sql)
+            
+            // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
+            // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
+            let result = await prisma.$executeRawUnsafe(sql)
+            console.log(result);
 
         // validação para verificar se o insert funcionou no DB
         if(result){
@@ -38,6 +39,7 @@ const insertAluno = async(dadosAluno) => {
         }
 
     } catch (error) {
+        console.log(error);
         return false
     }
 }
@@ -103,7 +105,7 @@ const updateRecoverAluno = async(id) => {
 const selectAllAlunos = async () => {
 
     try {
-        let sql = `select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso 
+        let sql = `select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_cursos.nome as curso, tbl_aluno.status 
                     from tbl_aluno 
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
                     order by nome asc`
@@ -127,15 +129,16 @@ const selectByIdAluno = async (id) => {
     try {
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso from tbl_aluno
+        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
-                    where id=${id} and status=true`
+                    where tbl_aluno.id=${id}`
 
         // executa no DBA o script SQL
         let rsAluno = await prisma.$queryRawUnsafe(sql)
         return rsAluno
 
     } catch (error) {
+        console.log(error);
         return false
     }
 }
@@ -144,10 +147,10 @@ const selectByIdAluno = async (id) => {
 const selectByNome = async (nome) => {
     
     try {
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso from tbl_aluno
+        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
                     where tbl_aluno.nome like '%${nome}%' and status=true`
-    
+
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
         let rsAluno = await prisma.$queryRawUnsafe(sql)
 

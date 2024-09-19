@@ -22,7 +22,7 @@ const getBuscarIcone = async (id) => {
     if (idIcone == '' || idIcone == undefined || isNaN(idIcone)) {
         return message.ERROR_INVALID_ID //400
     } else {
-        let dadosIcone = await professorDAO.selectByIdIcone(idIcone)
+        let dadosIcone = await iconeDAO.selectByIdIcone(idIcone)
 
         if (dadosIcone) {
             // validação para verificar se existem dados de retorno

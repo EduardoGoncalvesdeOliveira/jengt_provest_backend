@@ -45,7 +45,6 @@ const controllerProf = require('./controller/controller-prof')
 
 
 // #region ALUNO
-
 /****************************** ALUNO ****************************/
 // endpoints: listar os admins
 app.get('/v1/jengt_provest/alunos', cors(), async(request, response, next) => {
@@ -57,30 +56,30 @@ app.get('/v1/jengt_provest/alunos', cors(), async(request, response, next) => {
 })
 
 // endpoint: filtrar pelo nome
-app.get('/v1/leilao_expresso/admins/filtro', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/alunos/filtro', cors(), async(request, response, next) => {
     let filtro = request.query.nome
 
     // chama a função para retornar os dados do admin
-    let dadosAdmins = await controllerAluno.getAdminByNome(filtro)
+    let dadosAlunos = await controllerAluno.getAlunoByNome(filtro)
 
-    response.status(dadosAdmins.status_code)
-    response.json(dadosAdmins)
+    response.status(dadosAlunos.status_code)
+    response.json(dadosAlunos)
 })
 
 // endpoint: retorna os dados do admin, filtrando pelo ID
-app.get('/v1/leilao_expresso/admin/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/aluno/:id', cors(), async(request, response, next) => {
     // recebe o id da requisição do admin
-    let idAdmin = request.params.id
+    let idAluno = request.params.id
 
-    let dadosAdmin = await controllerAluno.getBuscarAdmin(idAdmin)
+    let dadosAluno = await controllerAluno.getBuscarAluno(idAluno)
 
-    response.status(dadosAdmin.status_code)
-    response.json(dadosAdmin)
+    response.status(dadosAluno.status_code)
+    response.json(dadosAluno)
 })
 
 // endpoint: inserir novos admins no Banco de Dados
     // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/leilao_expresso/admin', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/aluno', cors(), bodyParserJSON, async(request, response, next) => {
 
         // recebe o content type da requisição (A API deve receber somente application/json)
         let contentType = request.headers['content-type']
@@ -89,7 +88,7 @@ app.post('/v1/leilao_expresso/admin', cors(), bodyParserJSON, async(request, res
         let dadosBody = request.body
     
         // encaminha os dados da requisição para a controller enviar para o BD
-        let resultDados = await controllerAluno.setNovoAdmin(dadosBody, contentType)
+        let resultDados = await controllerAluno.setNovoAluno(dadosBody, contentType)
         
         response.status(resultDados.status_code)
         response.json(resultDados)
@@ -97,7 +96,7 @@ app.post('/v1/leilao_expresso/admin', cors(), bodyParserJSON, async(request, res
 })
 
 // endpoint: editar o status do admin para false para "exclui-lo"
-app.put('/v1/leilao_expresso/admin/excluir/:id', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/admin/excluir/:id', cors(), async(request, response, next) => {
     let admin = request.params.id
     let dadosAdmin = await controllerAluno.setEditarExcluirAdmin(admin)
 
@@ -106,7 +105,7 @@ app.put('/v1/leilao_expresso/admin/excluir/:id', cors(), async(request, response
 })
 
 // endpoint: editar o status do admin para false para acha-lo
-app.put('/v1/leilao_expresso/admin/ativar/:id', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/admin/ativar/:id', cors(), async(request, response, next) => {
     let admin = request.params.id
     let dadosAdmin = await controllerAluno.setEditarRenovarAdmin(admin)
 
@@ -115,7 +114,7 @@ app.put('/v1/leilao_expresso/admin/ativar/:id', cors(), async(request, response,
 })
 
 // endpoint: editar os dados do admin
-app.put('/v1/leilao_expresso/admin/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/admin/:id', cors(), bodyParserJSON, async(request, response, next) => {
     let admin = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -132,7 +131,18 @@ app.put('/v1/leilao_expresso/admin/:id', cors(), bodyParserJSON, async(request, 
 })
 /*************************************************************************/
 
+// #region CURSO
 
-app.listen(3306, function() {
+/****************************** CURSO ****************************/
+// endpoints: listar os cursos
+app.get('/v1/jengt_provest/cursos', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados do admin
+    let dadosAlunos = await controllerAluno.getListarAlunos()
+
+    response.status(dadosAlunos.status_code)
+    response.json(dadosAlunos)
+})
+
+app.listen(8080, function() {
     console.log('API Funcionando e aguardando requisições')
 })

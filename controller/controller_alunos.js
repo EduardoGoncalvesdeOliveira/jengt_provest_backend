@@ -4,24 +4,31 @@
 // versao: 1.0
 
 // import do arquivo DAO para manipular dados do BD
-const alunoDAO = require('../model/DAO/alunos')
+const alunoDAO = require('../model/DAO/alunos.js')
+const cursoDAO = require('../model/DAO/cursos.js')
+const controllerIcone = require('./controller-icones.js')
+const controllerCurso = require('./controller-curso.js')
 
 // import do arquivo de configuração do projeto
 const message = require('../modulo/config.js')
 
-// post: função para inserir um novo admin no DBA
+// post: função para inserir um novo aluno no DBA
 const setNovoAluno = async(dadosAluno, contentType) => {
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
             // cria a variável JSON
             let resultDadosAlunos = {}
+            let valIcone = await controllerIcone.getBuscarIcone(dadosAluno.icone_id)
+            let valCurso = await controllerCurso.getBuscarCurso(dadosAluno.curso_id)
 
+            console.log(resultDadosAlunos);
              //Validação para verificar campos obrigatórios e conistência de dados
-             if (dadosAluno.nome == ''             || dadosAluno.nome == undefined              || dadosAluno.nome.length > 100       ||
-                dadosAluno.email == ''             || dadosAluno.email == undefined             || dadosAluno.email.length > 120      ||
-                dadosAluno.senha == ''             || dadosAluno.senha == undefined             || dadosAluno.senha.length > 32       ||
-                dadosAluno.icone_id == ''          || dadosAluno.icone_id == undefined          || dadosAluno.senha.length > 32
-            ){    
+             if (dadosAluno.nome == ''             || dadosAluno.nome == undefined              || dadosAluno.nome.length > 100         ||
+                dadosAluno.email == ''             || dadosAluno.email == undefined             || dadosAluno.email.length > 120        ||
+                dadosAluno.senha == ''             || dadosAluno.senha == undefined             || dadosAluno.senha.length > 32         ||
+                dadosAluno.icone_id == ''          || dadosAluno.icone_id == undefined          || valIcone.status == false             ||
+                dadosAluno.curso_id == ''          || dadosAluno.curso_id == undefined          || valCurso.status == false   
+                ){    
                  return message.ERROR_REQUIRED_FIELDS // 400      
             } else {
                 //envia os dados para o DAO inserir no BD
@@ -29,20 +36,23 @@ const setNovoAluno = async(dadosAluno, contentType) => {
 
                 //validação para verificar se os dados foram inseridos pelo DAO no BD
                 if (novoAluno) {
-                    
-                    let id = await alunoDAO.selectLastId()
-                    
-                    dadosAluno.id = Number(id[0].id)
+                    let id = await alunoDAO.selectLastId()             
                     
                     // cria o padrão de JSON para retorno dos dados criados no DB
                     resultDadosAlunos.status = message.SUCCESS_CREATED_ITEM.status
                     resultDadosAlunos.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     resultDadosAlunos.message = message.SUCCESS_CREATED_ITEM.message
-                    resultDadosAlunos.aluno = dadosAluno
+                    resultDadosAlunos.aluno = {
+                        id: Number(id[0].id),
+                        nome: dadosAluno.nome,
+                        email: dadosAluno.email,
+                        senha: dadosAluno.senha,
+                        curso: valCurso.curso[0],
+                        icone: valIcone.icone[0],
+                    }
                     return resultDadosAlunos
                 } 
             }
-
         } else {
             return message.ERROR_CONTENT_TYPE //415
         }
@@ -52,31 +62,29 @@ const setNovoAluno = async(dadosAluno, contentType) => {
     }
 }
 
-// put: função para atualizar um admin existente
+// put: função para atualizar um aluno existente
 const setAtualizarAluno = async (dadosAluno, contentType, id) => {
     try {
-        
         let aluno = id
         
         if (String(contentType).toLowerCase() == 'application/json') {
-
             // cria a variável JSON
             let resultDadosAluno = {}
+            let valIcone = await controllerIcone.getBuscarIcone(dadosAluno.icone_id)
+            let valCurso = await controllerCurso.getBuscarCurso(dadosAluno.curso_id)
 
-            if (dadosAluno.nome == ''             || dadosAluno.nome == undefined              || dadosAluno.nome.length > 100       ||
-                dadosAluno.email == ''             || dadosAluno.email == undefined             || dadosAluno.email.length > 120      ||
-                dadosAluno.telefone == ''          || dadosAluno.telefone == undefined          || dadosAluno.telefone.length > 12    ||
-                dadosAluno.senha == ''             || dadosAluno.senha == undefined             || dadosAluno.senha.length > 32 ){
-
+            if (dadosAluno.nome == ''         || dadosAluno.nome == undefined       || dadosAluno.nome.length > 100   ||
+                dadosAluno.email == ''        || dadosAluno.email == undefined      || dadosAluno.email.length > 120  ||
+                dadosAluno.icone_id == ''     || dadosAluno.icone_id == undefined   || valIcone.status == false       ||
+                dadosAluno.curso_id == ''     || dadosAluno.curso_id == undefined   || valCurso.status == false   
+                ){
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
-                
                 //envia os dados para o DAO inserir no BD
                 let alunoAtualizado = await alunoDAO.updateAluno(dadosAluno, aluno);
 
                 //validação para verificar se os dados foram inseridos pelo DAO no BD 
                 if (alunoAtualizado) {
-
                     dadosAluno.id = aluno
 
                     // cria o padrão de JSON para retorno dos dados criados no DB
@@ -102,35 +110,35 @@ console.log(error);
     }
 }
 
-// delete/put: função para esconder um admin existente
-// const setEditarExcluirUsuario = async (id) => {
-//     try {
-//         let usuario = id
-//         let valUsuario  = await getBuscarAdmin(usuario)
-//         let resultDadosUsuario
+//delete/put: função para esconder um aluno existente
+const setEditarExcluirAluno = async (id) => {
+    try {
+        let aluno = id
+        let valAluno  = await getBuscarAluno(aluno)
+        let resultDadosAluno
 
-//         if (usuario == '' || usuario == undefined || isNaN(usuario)) {
-//             return message.ERROR_INVALID_ID // 400
-//         } else if(valUsuario.status == false){
-//             return message.ERROR_NOT_FOUND // 404
-//         }else {
+        if (aluno == '' || aluno == undefined || isNaN(aluno)) {
+            return message.ERROR_INVALID_ID // 400
+        } else if(valAluno.status == false){
+            return message.ERROR_NOT_FOUND // 404
+        }else {
 
-//             //envia os dados para a model inserir no BD
-//             resultDadosUsuario = await usuarioDAO.setEditarExcluirUsuario(usuario)
-//             //Valida se o BD inseriu corretamente os dados
-//             if (resultDadosUsuario)
-//                 return message.SUCCESS_DELETED_ITEM // 200
-//             else
-//                 return message.ERROR_INTERNAL_SERVER_DBA // 500
+            //envia os dados para a model inserir no BD
+            resultDadosAluno = await usuarioDAO.setEditarExcluirUsuario(usuario)
+            //Valida se o BD inseriu corretamente os dados
+            if (resultDadosAluno)
+                return message.SUCCESS_DELETED_ITEM // 200
+            else
+                return message.ERROR_INTERNAL_SERVER_DBA // 500
 
-//         }
+        }
         
-//     } catch (error) {
-//         message.ERROR_INTERNAL_SERVER // 500
-//     }
-// }
+    } catch (error) {
+        message.ERROR_INTERNAL_SERVER // 500
+    }
+}
 
-// put: função para achar um admin existente
+// put: função para achar um aluno existente
 const setEditarRenovarAluno = async (id) => {
     try {
         let aluno = id
@@ -155,14 +163,14 @@ const setEditarRenovarAluno = async (id) => {
     }
 }
 
-// get: função para listar todos os admins existentes no DBA
+// get: função para listar todos os alunos existentes no DBA
 const getListarAlunos = async () => {
     let alunoJSON = {}
     let dadosAlunos = await alunoDAO.selectAllAlunos()
 
     if (dadosAlunos) {
         if (dadosAlunos.length > 0) {
-            alunoJSON.usuarios = dadosAlunos
+            alunoJSON.alunos = dadosAlunos
             alunoJSON.qt = dadosAlunos.length
             alunoJSON.status_code = 200
             return alunoJSON
@@ -174,9 +182,9 @@ const getListarAlunos = async () => {
     }
 }
 
-// get: função para buscar um admin pelo ID
+// get: função para buscar um aluno pelo ID
 const getBuscarAluno = async (id) => {
-    // recebe o id da GegetBuscarClassificacao
+    // recebe o id
     let idAluno = id;
     let alunoJSON = {}
     
@@ -185,7 +193,6 @@ const getBuscarAluno = async (id) => {
         return message.ERROR_INVALID_ID //400
     } else {
         let dadosAluno = await alunoDAO.selectByIdAluno(idAluno)
-
         if (dadosAluno) {
             // validação para verificar se existem dados de retorno
             if (dadosAluno.length > 0) {
@@ -202,9 +209,9 @@ const getBuscarAluno = async (id) => {
     }
 }
 
-// get: função para buscar um admin filtrando pelo nome
+// get: função para buscar um aluno filtrando pelo nome
 const getAlunoByNome = async (nome) => {
-    let usuarioJSON = {}
+    let alunoJSON = {}
     let filtro = nome
 
     if (filtro == '' || filtro == undefined) {
@@ -214,10 +221,11 @@ const getAlunoByNome = async (nome) => {
         let dadosAluno = await alunoDAO.selectByNome(filtro)
         if (dadosAluno) {
             if (dadosAluno.length > 0) {
-                usuarioJSON.usuario = dadosAluno
-                usuarioJSON.qt = dadosAluno.length
-                usuarioJSON.status_code = 200
-                return usuarioJSON
+                alunoJSON.aluno = dadosAluno
+                alunoJSON.qt = dadosAluno.length
+                alunoJSON.status_code = 200
+
+                return alunoJSON
             } else {
                 return message.ERROR_NOT_FOUND //404
             }
@@ -228,25 +236,16 @@ const getAlunoByNome = async (nome) => {
 }
 
 const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
-
-    try {
-        
+    try { 
         if(String(contentType).toLowerCase() == 'application/json'){
-
             let resultDadosUsuario = {}
         
-            if( 
-                idAluno == ''          || idAluno == undefined          ||
-                dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 100 ||
+            if(dadosAluno.email == ''  || dadosAluno.email == undefined || dadosAluno.email.length > 100 ||
                 dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 50 
             ){
-                
-                return message.ERROR_REQUIRED_FIELDS // 400
-                
+                return message.ERROR_REQUIRED_FIELDS // 400  
             }else{
-                
                 let alunoAtualizado = await alunoDAO.updateAlunoSenha(dadosAluno, idAluno)
-                                        
                 dadosAluno.id = idAluno
 
                 if(alunoAtualizado){
@@ -256,13 +255,9 @@ const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
                     resultDadosUsuario.aluno = dadosAluno
                     return resultDadosUsuario
                 }else {
-
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
-
                 }
-                
             }
-    
         }else{
             return message.ERROR_CONTENT_TYPE // 415
         }
@@ -274,28 +269,20 @@ const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
 }
 
 const getValidarAluno = async(email, senha, contentType) => {
-    
     try {
-
-        if(String(contentType).toLowerCase() == 'application/json'){
-    
+        if(String(contentType).toLowerCase() == 'application/json'){   
             let emailAluno = email
             let senhaAluno = senha
             let alunoJSON = {}
 
             if(emailAluno == '' || emailAluno == undefined || senhaAluno == '' || senhaAluno == undefined){
-
                 return message.ERROR_REQUIRED_FIELDS // 400
-
             } else {
-
                 let dadosAluno = await usuarioDAO.selectValidacaoUsuario(emailAluno, senhaAluno)
 
                 console.log(dadosAluno);
                 if(dadosAluno){
-
                     if(dadosAluno.length > 0){         
-
                         let aluno = dadosAluno
 
                         alunoJSON.status = message.VALIDATED_ITEM.status       
@@ -307,7 +294,6 @@ const getValidarAluno = async(email, senha, contentType) => {
                     } else {
                         return message.ERROR_NOT_FOUND // 404
                     }
-
                 } else {
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
                 }
@@ -329,7 +315,7 @@ module.exports = {
     setNovoAluno,
     setAtualizarAlunoSenha,
     setAtualizarAluno,
-    //setEditarExcluiUsuario,
+    setEditarExcluirAluno,
     setEditarRenovarAluno,
     getListarAlunos,
     getBuscarAluno,

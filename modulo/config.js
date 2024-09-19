@@ -41,7 +41,7 @@ const ERROR_INVALID_PARAM = {
 const ERROR_CONTENT_TYPE = {
     status: false, 
     status_code: 415, 
-    message: "O Content-Type da requisição não é supotado. Os dados precisam ser encaminhados no formato application/json."
+    message: "O Content-Type da requisição não é suportado. Os dados precisam ser encaminhados no formato application/json."
 }
 
 const ERROR_INTERNAL_SERVER = {
