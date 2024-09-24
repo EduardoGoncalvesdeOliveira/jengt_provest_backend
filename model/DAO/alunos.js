@@ -193,11 +193,11 @@ const updateAlunoSenha = async (dadosAluno, idAluno) => {
 }
 
 // get: login
-const selectValidacaoAluno = async (email, senha) => {
-
+const selectValidacaoAluno = async (emailAluno, senhaAluno) => {
     try {
-        let sql = `select nome, email, senha, from tbl_aluno where email = '${email}' and senha = md5('${senha}')`
+        let sql = `select email, senha, from tbl_aluno where email = '${emailAluno}' and senha = md5('${senhaAluno}')`
         let rsAluno = await prisma.$queryRawUnsafe(sql)
+        console.log(rsAluno);
         return rsAluno        
     } catch (error) {
         return false

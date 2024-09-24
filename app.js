@@ -146,6 +146,24 @@ app.put('/v1/jengt_provest/aluno/senha/:id', cors(), bodyParserJSON, async(reque
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
+
+// endpoint: inserir novos alunos no Banco de Dados
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async(request, response, next) => {
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerAluno.getValidarAluno(dadosBody, contentType)
+    
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+    
+})
 /*************************************************************************/
 
 // #region PROF
