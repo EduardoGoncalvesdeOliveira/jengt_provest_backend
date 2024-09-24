@@ -283,11 +283,11 @@ const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
     }
 }
 
-const getValidarAluno = async(email, senha, contentType) => {
+const getValidarAluno = async(dadosAluno, contentType) => {
     try {
         if(String(contentType).toLowerCase() == 'application/json'){   
-            let emailAluno = email
-            let senhaAluno = senha
+            let emailAluno = dadosAluno.email
+            let senhaAluno = dadosAluno.senha
             let alunoJSON = {}
 
             if(emailAluno == '' || emailAluno == undefined || senhaAluno == '' || senhaAluno == undefined){
