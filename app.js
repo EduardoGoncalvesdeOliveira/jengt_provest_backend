@@ -83,7 +83,7 @@ app.post('/v1/jengt_provest/aluno', cors(), bodyParserJSON, async(request, respo
 
         // recebe o content type da requisição (A API deve receber somente application/json)
         let contentType = request.headers['content-type']
-    
+
         //recebe os dados encaminhados na requisição no body(JSON)
         let dadosBody = request.body
     
@@ -147,7 +147,7 @@ app.put('/v1/jengt_provest/aluno/senha/:id', cors(), bodyParserJSON, async(reque
     response.json(resultDados)
 })
 
-// endpoint: inserir novos alunos no Banco de Dados
+// endpoint: validacao de usuario
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
 app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async(request, response, next) => {
 
@@ -268,6 +268,24 @@ app.put('/v1/jengt_provest/prof/senha/:id', cors(), bodyParserJSON, async(reques
     
     response.status(resultDados.status_code)
     response.json(resultDados)
+})
+
+// endpoint: validacao de usuario
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/prof/entrar', cors(), bodyParserJSON, async(request, response, next) => {
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerProf.getValidar(dadosBody, contentType)
+    
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+    
 })
 /*************************************************************************/
 

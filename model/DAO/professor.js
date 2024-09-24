@@ -195,10 +195,10 @@ const updateProfSenha = async (dadosProf, idProf) => {
 
 }
 
-const selectValidacaoProf = async (email, senha) => {
+const selectValidacaoProf = async (emailProf, senhaProf) => {
 
     try {
-        let sql = `select nome, email from tbl_professor where email = '${email}' and senha = md5('${senha}')`
+        let sql = `select nome, email from tbl_professor where email = '${emailProf}' and senha = md5('${senhaProf}')`
         let rsProf = await prisma.$queryRawUnsafe(sql)
         return rsProf        
     } catch (error) {
