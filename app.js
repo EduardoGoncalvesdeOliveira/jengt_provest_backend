@@ -129,6 +129,23 @@ app.put('/v1/jengt_provest/aluno/:id', cors(), bodyParserJSON, async(request, re
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
+
+// endpoint: editar a senha do aluno
+app.put('/v1/jengt_provest/aluno/senha/:id', cors(), bodyParserJSON, async(request, response, next) => {
+    let aluno = request.params.id
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerAluno.setAtualizarAlunoSenha(dadosBody, contentType, aluno)
+    
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+})
 /*************************************************************************/
 
 // #region PROF
@@ -213,6 +230,23 @@ app.put('/v1/jengt_provest/prof/:id', cors(), bodyParserJSON, async(request, res
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerProf.setAtualizarProfessor(dadosBody, contentType, prof)
+    
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+})
+
+// endpoint: editar a senha do aluno
+app.put('/v1/jengt_provest/prof/senha/:id', cors(), bodyParserJSON, async(request, response, next) => {
+    let prof = request.params.id
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerProf.setAtualizarProfSenha(dadosBody, contentType, prof)
     
     response.status(resultDados.status_code)
     response.json(resultDados)

@@ -94,7 +94,6 @@ const setAtualizarAluno = async (dadosAluno, contentType, id) => {
                         id: Number(id[0].id),
                         nome: dadosAluno.nome,
                         email: dadosAluno.email,
-                        senha: dadosAluno.senha,
                         curso: valCurso.curso[0],
                         icone: valIcone.icone[0],
                     }
@@ -245,35 +244,43 @@ const getAlunoByNome = async (nome) => {
 
 const setAtualizarAlunoSenha = async(dadosAluno, contentType, idAluno) => {
     try { 
-        if(String(contentType).toLowerCase() == 'application/json'){
-            let resultDadosAluno = {}
+        let aluno = idAluno
         
-            if(dadosAluno.email == ''  || dadosAluno.email == undefined || dadosAluno.email.length > 100 ||
-                dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 50 
-            ){
-                return message.ERROR_REQUIRED_FIELDS // 400  
-            }else{
-                let alunoAtualizado = await alunoDAO.updateAlunoSenha(dadosAluno, idAluno)
-                dadosAluno.id = idAluno
+        if (String(contentType).toLowerCase() == 'application/json') {
+            // cria a variável JSON
+            let resultDadosAluno = {}
 
-                if(alunoAtualizado){
-                    resultDadosAluno.status = message.UPDATED_ITEM.status
-                    resultDadosAluno.status_code = message.UPDATED_ITEM.status_code
-                    resultDadosAluno.message = message.UPDATED_ITEM.message
-                    resultDadosAluno.aluno = dadosAluno
+            if (dadosAluno.senha == ''         || dadosAluno.senha == undefined       || dadosAluno.senha.length > 32){
+                return message.ERROR_REQUIRED_FIELDS // 400
+            } else {
+                //envia os dados para o DAO inserir no BD
+                let senhaAtt = await alunoDAO.updateAlunoSenha(dadosAluno, aluno)
+
+                //validação para verificar se os dados foram inseridos pelo DAO no BD 
+                if (senhaAtt) {
+                    dadosAluno.id = aluno
+
+                    // cria o padrão de JSON para retorno dos dados criados no DB
+                    resultDadosAluno.status = message.SUCCESS_UPDATED_ITEM.status
+                    resultDadosAluno.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                    resultDadosAluno.message = message.SUCCESS_UPDATED_ITEM.message
+                    resultDadosAluno.aluno = {
+                        id: idAluno,
+                        senha: dadosAluno.senha
+                    }
                     return resultDadosAluno
-                }else {
+                } else {
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
                 }
             }
-        }else{
-            return message.ERROR_CONTENT_TYPE // 415
+        } else {
+            return message.ERROR_CONTENT_TYPE //415
         }
 
     } catch (error) {
-        message.ERROR_INTERNAL_SERVER // 500
+        console.log(error);
+        return message.ERROR_INTERNAL_SERVER // 500
     }
-
 }
 
 const getValidarAluno = async(email, senha, contentType) => {

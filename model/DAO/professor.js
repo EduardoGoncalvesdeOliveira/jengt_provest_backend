@@ -183,7 +183,7 @@ const selectLastId = async () => {
 const updateProfSenha = async (dadosProf, idProf) => {
 
     try {
-        let sql = `update tbl_professor set nome = '${dadosProf.nome}', email = '${dadosProf.email}', senha = md5('${dadosProf.senha}') where id = ${idProf}`   
+        let sql = `update tbl_professor set senha = md5('${dadosProf.senha}') where id = ${idProf}`   
         let resultStatus = await prisma.$executeRawUnsafe(sql)
         if(resultStatus)
             return true

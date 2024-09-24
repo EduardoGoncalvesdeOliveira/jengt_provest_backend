@@ -276,35 +276,43 @@ const getProfessorByNome = async (nome) => {
 const setAtualizarProfSenha = async (dadosProf, contentType, idProf) => {
 
     try {
+        let professor = idProf
+
         if (String(contentType).toLowerCase() == 'application/json') {
-            let resultDadosProf = {}
 
-            if (
-                idProf == '' || idProf == undefined ||
-                dadosProf.nome == '' || dadosProf.nome == undefined || dadosProf.nome.length > 100 ||
-                dadosProf.email == '' || dadosProf.email == undefined || dadosProf.email.length > 100 ||
-                dadosProf.senha == '' || dadosProf.senha == undefined || dadosProf.senha.length > 50
-            ) {
-                return message.ERROR_REQUIRED_FIELDS // 400  
+            // cria a variável JSON
+            let resultDadosProfs = {}
+
+            if (dadosProf.senha == ''     || dadosProf.senha == undefined     || dadosProf.senha.length > 32) {
+                return message.ERROR_REQUIRED_FIELDS // 400
             } else {
-                let profAtt = await professorDAO.updateProfSenha(dadosProf, idProf)
-                dadosProf.id = idProf
 
+                //envia os dados para o DAO inserir no BD
+                let profAtt = await professorDAO.updateProfSenha(dadosProf, professor);
+
+                //validação para verificar se os dados foram inseridos pelo DAO no BD 
                 if (profAtt) {
-                    resultDadosProf.status = message.UPDATED_ITEM.status
-                    resultDadosProf.status_code = message.UPDATED_ITEM.status_code
-                    resultDadosProf.message = message.UPDATED_ITEM.message
-                    resultDadosProf.professor = dadosProf
-                    return resultDadosProf
+
+                    dadosProf.id = professor
+
+                    // cria o padrão de JSON para retorno dos dados criados no DB
+                    resultDadosProfs.status = message.SUCCESS_UPDATED_ITEM.status
+                    resultDadosProfs.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                    resultDadosProfs.message = message.SUCCESS_UPDATED_ITEM.message
+                    resultDadosProfs.professor = dadosProf
+
+                    return resultDadosProfs
                 } else {
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
                 }
             }
         } else {
-            return message.ERROR_CONTENT_TYPE // 415
+            return message.ERROR_CONTENT_TYPE //415
         }
+
     } catch (error) {
-        message.ERROR_INTERNAL_SERVER // 500
+        console.log(error);
+        return message.ERROR_INTERNAL_SERVER // 500
     }
 }
 
