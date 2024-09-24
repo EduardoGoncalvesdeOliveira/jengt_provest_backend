@@ -290,7 +290,10 @@ const getValidarAluno = async(dadosAluno, contentType) => {
             let senhaAluno = dadosAluno.senha
             let alunoJSON = {}
 
-            if(emailAluno == '' || emailAluno == undefined || senhaAluno == '' || senhaAluno == undefined){
+            if(emailAluno == ''  || emailAluno == undefined  || 
+                senhaAluno == '' || senhaAluno == undefined
+            ){
+                
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
                 let dadosAluno = await alunoDAO.selectValidacaoAluno(emailAluno, senhaAluno)
@@ -312,15 +315,12 @@ const getValidarAluno = async(dadosAluno, contentType) => {
                     return message.ERROR_INTERNAL_SERVER_DBA // 500
                 }
             }
-            
         }else{
             return message.ERROR_CONTENT_TYPE // 415
         }
-
     } catch (error) {
         message.ERROR_INTERNAL_SERVER // 500
     }
-
 }
 
 

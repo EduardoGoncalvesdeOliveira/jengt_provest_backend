@@ -316,11 +316,11 @@ const setAtualizarProfSenha = async (dadosProf, contentType, idProf) => {
     }
 }
 
-const getValidarProf = async (email, senha, contentType) => {
+const getValidarProf = async (dadosProf, contentType) => {
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
-            let emailProf = email
-            let senhaProf = senha
+            let emailProf = dadosProf.email
+            let senhaProf = dadosProf.senha
             let professoresJSON = {}
 
             if (emailProf == '' || emailProf == undefined || senhaProf == '' || senhaProf == undefined) {
