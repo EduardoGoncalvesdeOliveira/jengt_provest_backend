@@ -41,8 +41,9 @@ const bodyParserJSON = bodyParser.json()
 /****************************** IMPORT DE CONTROLLERS ****************************/
 const controllerAluno = require('./controller/controller_alunos.js')
 const controllerProf = require('./controller/controller-prof.js')
+const controllerExercicio = require('./controller/controller-exercicios.js')
+const controllerCurso = require('./controller/controller-curso.js')
 /*********************************************************************************/
-
 
 // #region ALUNO
 /****************************** ALUNO ****************************/
@@ -286,6 +287,74 @@ app.post('/v1/jengt_provest/prof/entrar', cors(), bodyParserJSON, async(request,
     response.status(resultDados.status_code)
     response.json(resultDados)
     
+})
+/*************************************************************************/
+
+// #region EXERCICIOS
+/****************************** EXERCICIOS ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/exercicios', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosExercicios = await controllerExercicio.getListarExercicios()
+
+    response.status(dadosExercicios.status_code)
+    response.json(dadosExercicios)
+})
+
+// endpoint: filtrar pelo topico
+app.get('/v1/jengt_provest/exercicios/:idTopico', cors(), async(request, response, next) => {
+    let idTopico = request.params.idTopico
+
+    // chama a função para retornar os dados do admin
+    let dadosExercicio = await controllerExercicio.getExerciciosByTopico(idTopico)
+
+    response.status(dadosExercicio.status_code)
+    response.json(dadosExercicio)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/exercicio/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idExercicio = request.params.id
+
+    let dadosExercicio = await controllerExercicio.getBuscarExercicio(idExercicio)
+
+    response.status(dadosExercicio.status_code)
+    response.json(dadosExercicio)
+})
+/*************************************************************************/
+
+// #region CURSOS
+/****************************** CURSOS ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/cursos', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosCursos = await controllerCurso.getListarCursos()
+
+    response.status(dadosCursos.status_code)
+    response.json(dadosCursos)
+})
+
+// endpoint: filtrar pelo nome
+app.get('/v1/jengt_provest/cursos/filtro', cors(), async(request, response, next) => {
+    let filtro = request.query.nome
+
+    // chama a função para retornar os dados do admin
+    let dadosCurso = await controllerCurso.getCursoByNome(filtro)
+
+    response.status(dadosCurso.status_code)
+    response.json(dadosCurso)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/curso/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idCurso = request.params.id
+
+    let dadosCurso = await controllerCurso.getBuscarCurso(idCurso)
+
+    response.status(dadosCurso.status_code)
+    response.json(dadosCurso)
 })
 /*************************************************************************/
 
