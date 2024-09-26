@@ -24,9 +24,9 @@ const selectAllExercicios = async () => {
         // $queryRaw(‘codigo digitado aqui’)
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
+        let rsExercicio = await prisma.$queryRawUnsafe(sql)
 
-        return rsAluno
+        return rsExercicio
 
     } catch (error) {
         return false
@@ -44,8 +44,8 @@ const selectByIdExercicio = async (id) => {
                     where tbl_exercicio.id=${id}`
 
         // executa no DBA o script SQL
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
-        return rsAluno
+        let rsExercicio = await prisma.$queryRawUnsafe(sql)
+        return rsExercicio
 
     } catch (error) {
         console.log(error);
@@ -56,13 +56,18 @@ const selectByIdExercicio = async (id) => {
 // get: filtrar exercício pelo tópico de disciplina
 const selectByTopico = async (topico) => {
     try {
+        id = topico
 
         // realiza a busca do aluno pelo id
-        let sql = ``
+        let sql = `select tbl_exercicio.id, tbl_exercicio.questao, tbl_alternativas.opcao, tbl_alternativas.resposta, tbl_topicos.nome
+                    from tbl_topicos
+                    inner join tbl_exercicio on tbl_topicos.id=tbl_exercicio.topico_id
+                    inner join tbl_alternativas on tbl_exercicio.id=tbl_alternativas.questao_id
+                    where tbl_topicos.id = ${id}`
 
         // executa no DBA o script SQL
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
-        return rsAluno
+        let rsExercicio = await prisma.$queryRawUnsafe(sql)
+        return rsExercicio
 
     } catch (error) {
         console.log(error);
@@ -70,24 +75,28 @@ const selectByTopico = async (topico) => {
     }
 }
 
-// get: pegar o ultimo id
-const selectLastId = async () => {
+// get: buscar alternativas de uma questao existente filtrando pelo ID dela
+const selectAlternativasByIdQuestao = async(id) => {
     try {
 
-        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_aluno limit 1' 
+        // realiza a busca do aluno pelo id
+        let sql = `select tbl_alternativas.id, tbl_alternativas.opcao, tbl_alternativas.resposta from tbl_alternativas
+                    inner join tbl_exercicio on tbl_alternativas.questao_id=tbl_exercicio.id
+                    where tbl_exercicio.id=${id}`
 
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
-
-        return rsAluno
+        // executa no DBA o script SQL
+        let rsExercicio = await prisma.$queryRawUnsafe(sql)
+        return rsExercicio
 
     } catch (error) {
-        return false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+        console.log(error);
+        return false
     }
 }
 
 module.exports={
-    selectAllAlunos,
-    selectByIdAluno,
-    selectByNome,
-    selectLastId
+    selectAllExercicios,
+    selectByIdExercicio,
+    selectByTopico,
+    selectAlternativasByIdQuestao
 }
