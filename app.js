@@ -34,6 +34,10 @@ app.use((request, response, next) => {
     next()
 })
 
+const corsOptions = {
+    origin: '*'
+};
+
 // cria um objeto do tipo JSON para receber os dados via body nas requisições POST ou PUT
 const bodyParserJSON = bodyParser.json()
 
