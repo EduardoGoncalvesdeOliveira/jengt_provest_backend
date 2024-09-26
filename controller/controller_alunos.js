@@ -25,7 +25,6 @@ const setNovoAluno = async(dadosAluno, contentType) => {
              if (dadosAluno.nome == ''             || dadosAluno.nome == undefined              || dadosAluno.nome.length > 100         ||
                 dadosAluno.email == ''             || dadosAluno.email == undefined             || dadosAluno.email.length > 120        ||
                 dadosAluno.senha == ''             || dadosAluno.senha == undefined             || dadosAluno.senha.length > 32         ||
-                dadosAluno.icone_id == ''          || dadosAluno.icone_id == undefined          || valIcone.status == false             ||
                 dadosAluno.curso_id == ''          || dadosAluno.curso_id == undefined          || valCurso.status == false   
                 ){    
                  return message.ERROR_REQUIRED_FIELDS // 400      
