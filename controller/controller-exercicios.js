@@ -87,6 +87,14 @@ const getExerciciosByTopico = async (idTopico) => {
         let dadosExercicio = await exercicioDAO.selectByTopico(topico)
         if (dadosExercicio) {
             if (dadosExercicio.length > 0) {
+                const promise = dadosExercicio.map(async (exercicio) => {
+                    const alternativas = await exercicioDAO.selectAlternativasByIdQuestao(exercicio.id)                    
+                    if (alternativas) {                        
+                        exercicio.alternativas = alternativas
+                    }
+                })
+    
+                await Promise.all(promise)
                 exerciciosJSON.exercicios = dadosExercicio
                 exerciciosJSON.qt = dadosExercicio.length
                 exerciciosJSON.status_code = 200
