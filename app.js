@@ -46,6 +46,7 @@ const bodyParserJSON = bodyParser.json()
 const controllerAluno = require('./controller/controller_alunos.js')
 const controllerProf = require('./controller/controller-prof.js')
 const controllerExercicio = require('./controller/controller-exercicios.js')
+const controllerAlternativas = require('./controller/controller-alternativas.js')
 const controllerCurso = require('./controller/controller-curso.js')
 /*********************************************************************************/
 
@@ -322,9 +323,32 @@ app.get('/v1/jengt_provest/exercicio/:id', cors(), async(request, response, next
     let idExercicio = request.params.id
 
     let dadosExercicio = await controllerExercicio.getBuscarExercicio(idExercicio)
-
+    
     response.status(dadosExercicio.status_code)
     response.json(dadosExercicio)
+})
+/*************************************************************************/
+
+// #region ALTERNATIVAS
+/****************************** ALTERNATIVAS ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/alternativas', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosAlt = await controllerAlternativas.getListarAlternativas()
+
+    response.status(dadosAlt.status_code)
+    response.json(dadosAlt)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/alternativas/:idQuestao', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idQuestao = request.params.idQuestao
+
+    let dadosAlt = await controllerAlternativas.getAlternativasByIdQuestao(idQuestao)
+
+    response.status(dadosAlt.status_code)
+    response.json(dadosAlt)
 })
 /*************************************************************************/
 
