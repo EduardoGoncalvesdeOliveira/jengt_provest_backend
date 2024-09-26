@@ -23,9 +23,10 @@ const setNovoProfessor = async (dadosProf, contentType) => {
             const icone = controllerIcone.getBuscarIcone(dadosProf.icone_id)
 
             //Validação para verificar campos obrigatórios e conistência de dados
-            if (dadosProf.nome == '' || dadosProf.nome == undefined || dadosProf.nome.length > 150 ||
-                dadosProf.email == '' || dadosProf.email == undefined || dadosProf.email.length > 256 ||
-                dadosProf.senha == '' || dadosProf.senha == undefined || dadosProf.senha.length > 32
+            if (dadosProf.nome == ''        || dadosProf.nome == undefined         || dadosProf.nome.length > 150      ||
+                dadosProf.email == ''       || dadosProf.email == undefined        || dadosProf.email.length > 256     ||
+                dadosProf.senha == ''       || dadosProf.senha == undefined        || dadosProf.senha.length > 32      ||
+                dadosProf.icone_id == ''    || dadosProf.icone_id == undefined     || icone.status == false
             ) {
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
@@ -328,7 +329,6 @@ const getValidarProf = async (dadosProf, contentType) => {
             } else {
                 let dadosProf = await professorDAO.selectValidacaoProf(emailProf, senhaProf)
 
-                console.log(dadosProf);
                 if (dadosProf) {
                     if (dadosProf.length > 0) {
                         let professor = dadosProf
