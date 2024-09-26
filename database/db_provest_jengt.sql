@@ -281,3 +281,6 @@ create table tbl_vest_fases
             where tbl_aluno.nome like '%t%' and status=true;
 	select cast(last_insert_id() as DECIMAL) as id from tbl_aluno limit 1;
     select nome, email from tbl_aluno where email = 'tamiressenaisp@gmail.com' and senha = "jogar";
+    
+    
+    
