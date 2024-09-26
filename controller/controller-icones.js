@@ -40,8 +40,6 @@ const getBuscarIcone = async (id) => {
     }
 }
 
-console.log(getBuscarIcone(1));
-
 module.exports={
     getBuscarIcone
 }
