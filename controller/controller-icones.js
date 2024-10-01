@@ -40,6 +40,26 @@ const getBuscarIcone = async (id) => {
     }
 }
 
+// get: listar todos os icones
+const getListarIcones = async() => {
+    let iconeJSON = {}
+    let dadosIcone = await iconeDAO.selectAllIcones()
+
+    if (dadosIcone) {
+        if (dadosIcone.length > 0) {
+            iconeJSON.icones = dadosIcone
+            iconeJSON.qt = dadosIcone.length
+            iconeJSON.status_code = 200
+            return iconeJSON
+        } else {
+            return message.ERROR_NOT_FOUND
+        }
+    } else {
+        return message.ERROR_INTERNAL_SERVER_DBA
+    }
+}
+
 module.exports={
-    getBuscarIcone
+    getBuscarIcone,
+    getListarIcones
 }

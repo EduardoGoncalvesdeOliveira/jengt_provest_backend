@@ -27,6 +27,27 @@ const selectByIdIcone = async (id) => {
     }
 }
 
+// get: listar todos os alunos
+const selectAllIcones = async () => {
+
+    try {
+        let sql = `select tbl_icones.id, tbl_icones.url from tbl_icones order by id desc`
+    
+        // $queryrawUnsafe(‘encaminha apenas a variavel’)
+        // $queryRaw(‘codigo digitado aqui’)
+    
+        // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
+        let rsIcon = await prisma.$queryRawUnsafe(sql)        
+
+        return rsIcon
+
+    } catch (error) {
+        //console.log(error)
+        return false
+    }
+}
+
 module.exports={
-    selectByIdIcone
+    selectByIdIcone,
+    selectAllIcones
 }
