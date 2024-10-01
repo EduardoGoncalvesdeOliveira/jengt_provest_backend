@@ -48,6 +48,7 @@ const controllerProf = require('./controller/controller-prof.js')
 const controllerExercicio = require('./controller/controller-exercicios.js')
 const controllerCurso = require('./controller/controller-curso.js')
 const controllerTopicos = require('./controller/controller-topicos.js')
+const controllerIcones = require('./controller/controller-icones.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -326,6 +327,19 @@ app.get('/v1/jengt_provest/exercicio/:id', cors(), async(request, response, next
     
     response.status(dadosExercicio.status_code)
     response.json(dadosExercicio)
+})
+/*************************************************************************/
+
+// #region ICONES
+/****************************** ICONES ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/icones', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosIcones = await controllerIcones.getListarIcones()
+
+    response.status(dadosIcones.status_code)
+    response.json(dadosIcones
+    )
 })
 /*************************************************************************/
 
