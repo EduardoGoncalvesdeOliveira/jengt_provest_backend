@@ -28,8 +28,6 @@ const getListarExercicios = async () => {
 
             await Promise.all(promise)
 
-               await Promise.all(promise)
-
             exerciciosJSON.exercicios = dadosExercicios
             exerciciosJSON.qt = dadosExercicios.length
             exerciciosJSON.status_code = 200
@@ -148,5 +146,5 @@ const getAlternativasByIdQuestao = async (idQuestao) => {
 module.exports = {
     getListarExercicios,
     getBuscarExercicio,
-    getExerciciosByTopico,
+    getExerciciosByTopico
 }
