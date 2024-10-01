@@ -10,6 +10,10 @@
 
 const topicosDAO = require('../model/DAO/topicos.js')
 const exercicioDAO = require('../model/DAO/exercicios.js')
+const controllerExercicio = require('./controller-exercicios.js')
+
+//const controllerExercicio = require('./controller-exercicios.js')
+
 // import do arquivo de configuração do projeto
 const message = require('../modulo/config.js')
 
@@ -45,6 +49,7 @@ const getBuscarTopicos = async (id) => {
 
         let dadosTopicos = await topicosDAO.selectByIdTopico(idTopico)
         let questoes = await exercicioDAO.selectByTopico(idTopico)
+        //let alternativas = await controllerExercicio.getExerciciosByTopico(idTopico)
 
         if (dadosTopicos && questoes) {
             // validação para verificar se existem dados de retorno

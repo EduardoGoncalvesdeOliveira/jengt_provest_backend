@@ -40,6 +40,10 @@ const selectByIdTopico = async(id) => {
         let sql = `select tbl_topicos.id, tbl_topicos.nome 
                     from tbl_topicos where id=${id}`
 
+                    // select tbl_topicos.id, tbl_topicos.nome, tbl_exercicio.questao
+                    // from tbl_topicos inner join tbl_exercicio 
+                    // on tbl_topicos.id=tbl_exercicio.topico_id where tbl_topicos.id=2;
+
         // executa no DBA o script SQL
         let rsTopicos = await prisma.$queryRawUnsafe(sql)
         return rsTopicos
