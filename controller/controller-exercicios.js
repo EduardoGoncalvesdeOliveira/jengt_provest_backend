@@ -19,18 +19,16 @@ const getListarExercicios = async () => {
 
     if (dadosExercicios) {
         if (dadosExercicios.length > 0) {
-            //     const promise = dadosExercicios.map(async (prof) => {
-            //         if (disciplinas) {
-            //             let discArray = []
-            //             disciplinas.forEach((disc) => {
-            //                 discArray.push(disc.nome)
-            //             });
-            //             prof.disciplinas = discArray
-            //         }
+            const promise = dadosExercicios.map(async (exercicio) => {
+                const alternativas = await exercicioDAO.selectAlternativasByIdQuestao(exercicio.id)                    
+                if (alternativas) {                        
+                    exercicio.alternativas = alternativas
+                }
+            })
 
-            //     })
+            await Promise.all(promise)
 
-            //    await Promise.all(promise)
+               await Promise.all(promise)
 
             exerciciosJSON.exercicios = dadosExercicios
             exerciciosJSON.qt = dadosExercicios.length

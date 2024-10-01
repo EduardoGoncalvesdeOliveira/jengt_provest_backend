@@ -59,7 +59,7 @@ const selectByTopico = async (topico) => {
         id = topico
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_exercicio.id, tbl_exercicio.questao, tbl_topicos.nome
+        let sql = `select tbl_exercicio.id, tbl_exercicio.questao
                     from tbl_topicos
                     inner join tbl_exercicio on tbl_topicos.id=tbl_exercicio.topico_id
                     where tbl_topicos.id = ${id}`
