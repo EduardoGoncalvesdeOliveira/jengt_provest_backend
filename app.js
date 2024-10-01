@@ -46,8 +46,8 @@ const bodyParserJSON = bodyParser.json()
 const controllerAluno = require('./controller/controller_alunos.js')
 const controllerProf = require('./controller/controller-prof.js')
 const controllerExercicio = require('./controller/controller-exercicios.js')
-const controllerAlternativas = require('./controller/controller-alternativas.js')
 const controllerCurso = require('./controller/controller-curso.js')
+const controllerTopicos = require('./controller/controller-topicos.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -329,29 +329,6 @@ app.get('/v1/jengt_provest/exercicio/:id', cors(), async(request, response, next
 })
 /*************************************************************************/
 
-// #region ALTERNATIVAS
-/****************************** ALTERNATIVAS ****************************/
-// endpoints: listar tudo
-app.get('/v1/jengt_provest/alternativas', cors(), async(request, response, next) => {
-    // chama a função para retornar os dados
-    let dadosAlt = await controllerAlternativas.getListarAlternativas()
-
-    response.status(dadosAlt.status_code)
-    response.json(dadosAlt)
-})
-
-// endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/alternativas/:idQuestao', cors(), async(request, response, next) => {
-    // recebe o id da requisição do admin
-    let idQuestao = request.params.idQuestao
-
-    let dadosAlt = await controllerAlternativas.getAlternativasByIdQuestao(idQuestao)
-
-    response.status(dadosAlt.status_code)
-    response.json(dadosAlt)
-})
-/*************************************************************************/
-
 // #region CURSOS
 /****************************** CURSOS ****************************/
 // endpoints: listar tudo
@@ -383,6 +360,29 @@ app.get('/v1/jengt_provest/curso/:id', cors(), async(request, response, next) =>
 
     response.status(dadosCurso.status_code)
     response.json(dadosCurso)
+})
+/*************************************************************************/
+
+// #region TÓPICOS
+/****************************** TÓPICOS ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/topicos', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosTopicos = await controllerTopicos.getListarTopicos()
+
+    response.status(dadosTopicos.status_code)
+    response.json(dadosTopicos)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/topico/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idTopico = request.params.id
+
+    let dadosTopico = await controllerTopicos.getBuscarTopicos(idTopico)
+
+    response.status(dadosTopico.status_code)
+    response.json(dadosTopico)
 })
 /*************************************************************************/
 
