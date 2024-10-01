@@ -47,16 +47,20 @@ const getBuscarTopicos = async (id) => {
         return message.ERROR_INVALID_ID //400
     } else {
 
+        const dadosExercicio = await controllerExercicio.getExerciciosByTopico(id)
         let dadosTopicos = await topicosDAO.selectByIdTopico(idTopico)
-        let questoes = await exercicioDAO.selectByTopico(idTopico)
-        //let alternativas = await controllerExercicio.getExerciciosByTopico(idTopico)
 
-        if (dadosTopicos && questoes) {
+        if (dadosTopicos) {
+
+            if(dadosExercicio.exercicios.length > 0){
+                dadosTopicos[0].exercicios = dadosExercicio.exercicios
+            }
+
             // validação para verificar se existem dados de retorno
-            if (dadosTopicos.length > 0 && questoes.length > 0) {
-                dadosTopicos[0].questoes = questoes
-                topicosJSON.topico = dadosTopicos
+            if (dadosTopicos.length > 0) {
+                topicosJSON.topico = dadosTopicos[0]
                 topicosJSON.status_code = 200
+                
                 return topicosJSON
             } else {
                 return message.ERROR_NOT_FOUND //404
