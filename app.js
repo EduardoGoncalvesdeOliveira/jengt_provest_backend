@@ -49,6 +49,7 @@ const controllerExercicio = require('./controller/controller-exercicios.js')
 const controllerCurso = require('./controller/controller-curso.js')
 const controllerTopicos = require('./controller/controller-topicos.js')
 const controllerIcones = require('./controller/controller-icones.js')
+const controllerNot = require('./controller/controller-notif.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -386,6 +387,29 @@ app.get('/v1/jengt_provest/topicos', cors(), async(request, response, next) => {
 
     response.status(dadosTopicos.status_code)
     response.json(dadosTopicos)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/topico/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idTopico = request.params.id
+
+    let dadosTopico = await controllerTopicos.getBuscarTopicos(idTopico)
+
+    response.status(dadosTopico.status_code)
+    response.json(dadosTopico)
+})
+/*************************************************************************/
+
+// #region NOTIFICAÇÕES
+/****************************** NOTIFICAÇÕES ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/notificacoes', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosNot = await controllerNot.getListarNotif()
+
+    response.status(dadosNot.status_code)
+    response.json(dadosNot)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID

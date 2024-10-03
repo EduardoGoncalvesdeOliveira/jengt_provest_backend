@@ -13,7 +13,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 // get: listar todos os alunos
-const selectAllExercicios = async () => {
+const selectAllNotificacoes = async () => {
 
     try {
         let sql = `select tbl_notificacoes.titulo, tbl_notificacoes.descricao, tbl_vestibulares.nome, tbl_vestibulares.data_prova, tbl_vest_fases.fase_id
@@ -26,9 +26,9 @@ const selectAllExercicios = async () => {
         // $queryRaw(‘codigo digitado aqui’)
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsExercicio = await prisma.$queryRawUnsafe(sql)
+        let rsNotificacoes = await prisma.$queryRawUnsafe(sql)
 
-        return rsExercicio
+        return rsNotificacoes
 
     } catch (error) {
         return false
@@ -46,8 +46,8 @@ const selectById = async (id) => {
                     where tbl_exercicio.id=${id}`
 
         // executa no DBA o script SQL
-        let rsExercicio = await prisma.$queryRawUnsafe(sql)
-        return rsExercicio
+        let rsNotificacoes = await prisma.$queryRawUnsafe(sql)
+        return rsNotificacoes
 
     } catch (error) {
         console.log(error);
@@ -56,6 +56,6 @@ const selectById = async (id) => {
 }
 
 module.exports={
-    selectAllExercicios,
+    selectAllNotificacoes,
     selectById
 }
