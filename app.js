@@ -50,6 +50,7 @@ const controllerCurso = require('./controller/controller-curso.js')
 const controllerTopicos = require('./controller/controller-topicos.js')
 const controllerIcones = require('./controller/controller-icones.js')
 const controllerNot = require('./controller/controller-notif.js')
+const controllerTemas = require('./controller/controller-temas.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -413,14 +414,48 @@ app.get('/v1/jengt_provest/notificacoes', cors(), async(request, response, next)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/topico/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/notificacao/:id', cors(), async(request, response, next) => {
     // recebe o id da requisição do admin
-    let idTopico = request.params.id
+    let idNotif = request.params.id
 
-    let dadosTopico = await controllerTopicos.getBuscarTopicos(idTopico)
+    let dadosNot = await controllerNot.getBuscarNotif(idNotif)
 
-    response.status(dadosTopico.status_code)
-    response.json(dadosTopico)
+    response.status(dadosNot.status_code)
+    response.json(dadosNot)
+})
+
+// endpoint: retorna os dados, filtrando pelo vestibular
+app.get('/v1/jengt_provest/notificacoes/filtro/:vest', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let filtro = request.params.vest
+
+    let dadosNot = await controllerNot.getBuscarNotifByVestibular(filtro)
+
+    response.status(dadosNot.status_code)
+    response.json(dadosNot)
+})
+/*************************************************************************/
+
+// #region TEMAS - REDAÇÃO
+/****************************** TEMAS - REDAÇÃO ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/temas', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosTemas = await controllerTemas.getListarTemas()
+
+    response.status(dadosTemas.status_code)
+    response.json(dadosTemas)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/tema/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idTema = request.params.id
+
+    let dadosTema = await controllerTemas.getBuscarTema(idTema)
+
+    response.status(dadosTema.status_code)
+    response.json(dadosTema)
 })
 /*************************************************************************/
 
