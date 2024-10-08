@@ -104,6 +104,17 @@ app.post('/v1/jengt_provest/aluno', cors(), bodyParserJSON, async(request, respo
     
 })
 
+// endpoint: editar icone
+app.put('/v1/jengt_provest/aluno/icone/', cors(), async(request, response, next) => {
+    let icone = request.query.aluno
+    let id = request.query.icone
+    let dadosAluno = await controllerAluno.setAtualizarIcone(icone, id)
+
+    response.status(dadosAluno.status_code)
+    response.json(dadosAluno)
+})
+
+
 // endpoint: editar o status do aluno para false para "exclui-lo"
 app.put('/v1/jengt_provest/aluno/excluir/:id', cors(), async(request, response, next) => {
     let aluno = request.params.id

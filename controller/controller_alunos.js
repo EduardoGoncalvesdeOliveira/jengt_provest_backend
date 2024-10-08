@@ -116,6 +116,47 @@ const setAtualizarAluno = async (dadosAluno, contentType, id) => {
     }
 }
 
+// put: função para atualizar um icone existente
+const setAtualizarIcone = async (icone, id) => {
+    try {        
+            // cria a variável JSON
+            let resultDadosAluno = {}
+
+            if (
+                icone == '' || icone == undefined || icone == false ||
+                id == '' || id == undefined || id == false
+            ){
+                return message.ERROR_REQUIRED_FIELDS // 400
+            } else {
+                
+                //envia os dados para o DAO inserir no BD
+                let iconeAtt = await alunoDAO.updateIcone(icone, id);                
+console.log(iconeAtt);
+
+                //validação para verificar se os dados foram inseridos pelo DAO no BD 
+                if (iconeAtt) {
+
+                    // cria o padrão de JSON para retorno dos dados criados no DB
+                    resultDadosAluno.status = message.SUCCESS_UPDATED_ITEM.status
+                    resultDadosAluno.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                    resultDadosAluno.message = message.SUCCESS_UPDATED_ITEM.message
+
+                    return resultDadosAluno
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_DBA // 500
+                }
+
+            }
+
+       
+
+    } catch (error) {
+        console.log(error);
+        
+        return message.ERROR_INTERNAL_SERVER // 500
+    }
+}
+
 //delete/put: função para esconder um aluno existente
 const setEditarExcluirAluno = async (id) => {
     try {
@@ -329,6 +370,7 @@ module.exports = {
     setNovoAluno,
     setAtualizarAlunoSenha,
     setAtualizarAluno,
+    setAtualizarIcone,
     setEditarExcluirAluno,
     setEditarRenovarAluno,
     getListarAlunos,

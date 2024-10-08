@@ -70,6 +70,21 @@ const updateAluno = async(dadosAluno, id) => {
     }
 }
 
+// get: atualizar icone dp aluno
+const updateIcone = async(idIcone, id) => {
+    try {
+        let sql = `call updateIcone(${idIcone}, ${id})`
+
+        // executa o scriptSQL no BD e recebe o retorno dos dados na variável
+        let rsAluno = await prisma.$executeRawUnsafe(sql)
+        
+        return rsAluno
+
+    } catch (error) {
+        return false
+    }
+}
+
 // delete/put: método put apenas trocando o status, para "esconder" um aluno filtrando pelo ID
 const updateDeleteAluno = async(id) => {
     try {
@@ -207,6 +222,7 @@ module.exports={
     insertAluno,
     updateAluno,
     updateDeleteAluno,
+    updateIcone,
     updateRecoverAluno,
     selectAllAlunos,
     selectByIdAluno,
