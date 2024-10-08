@@ -51,7 +51,7 @@ const getBuscarTopicos = async (id) => {
         let dadosTopicos = await topicosDAO.selectByIdTopico(idTopico)
 
         if (dadosTopicos) {
-
+            
             if(dadosExercicio.exercicios.length > 0){
                 dadosTopicos[0].exercicios = dadosExercicio.exercicios
             }
