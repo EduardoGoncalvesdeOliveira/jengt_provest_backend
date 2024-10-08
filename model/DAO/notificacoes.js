@@ -16,7 +16,7 @@ const prisma = new PrismaClient()
 const selectAllNotificacoes = async () => {
 
     try {
-        let sql = `select tbl_notificacoes.titulo, tbl_notificacoes.descricao, tbl_vestibulares.nome, tbl_vestibulares.data_prova, tbl_vest_fases.fase_id
+        let sql = `select tbl_notificacoes.titulo, tbl_notificacoes.descricao, tbl_vestibulares.nome as vestibular, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_prova, tbl_vest_fases.fase_id
                     from tbl_notificacoes 
                     inner join tbl_vest_fases on tbl_notificacoes.vest_fases_id=tbl_vest_fases.id
                     inner join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
@@ -41,9 +41,33 @@ const selectById = async (id) => {
     try {
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_exercicio.id, tbl_exercicio.questao, tbl_topicos.nome as topico
-                    from tbl_exercicio inner join tbl_topicos on tbl_exercicio.topico_id=tbl_topicos.id 
-                    where tbl_exercicio.id=${id}`
+        let sql = `select tbl_notificacoes.titulo, tbl_notificacoes.descricao, tbl_vestibulares.nome as vestibular, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_prova, tbl_vest_fases.fase_id
+                    from tbl_notificacoes 
+                    inner join tbl_vest_fases on tbl_notificacoes.vest_fases_id=tbl_vest_fases.id
+                    inner join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
+					where tbl_notificacoes.id=${id}`
+
+        // executa no DBA o script SQL
+        let rsNotificacoes = await prisma.$queryRawUnsafe(sql)
+        return rsNotificacoes
+
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
+// get: buscar a notificacao existente filtrando pelo nome do vestibular
+const selectByVestibular = async (nomeVest) => {
+
+    try {
+
+        // realiza a busca do aluno pelo id
+        let sql = `select tbl_notificacoes.titulo, tbl_notificacoes.descricao, tbl_vestibulares.nome as vestibular, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_prova, tbl_vest_fases.fase_id
+                    from tbl_notificacoes 
+                    inner join tbl_vest_fases on tbl_notificacoes.vest_fases_id=tbl_vest_fases.id
+                    inner join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
+					where tbl_vestibulares.nome like '%${nomeVest}%'`
 
         // executa no DBA o script SQL
         let rsNotificacoes = await prisma.$queryRawUnsafe(sql)
@@ -57,5 +81,6 @@ const selectById = async (id) => {
 
 module.exports={
     selectAllNotificacoes,
-    selectById
+    selectById,
+    selectByVestibular
 }

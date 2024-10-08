@@ -59,7 +59,34 @@ const getListarNotif = async() => {
     }
 }
 
+// get: função para buscar uma notif filtrando pelo nome do vestibular
+const getBuscarNotifByVestibular = async (vestibular) => {
+    let notifJSON = {}
+    let filtro = vestibular
+    
+    if (filtro == '' || filtro == undefined) {
+        return message.ERROR_INVALID_PARAM //400
+    } else {
+
+        let dadosNotif = await notifDAO.selectByVestibular(filtro)
+        if (dadosNotif) {
+            if (dadosNotif.length > 0) {
+                notifJSON.notificacao = dadosNotif
+                notifJSON.qt = dadosNotif.length
+                notifJSON.status_code = 200
+
+                return notifJSON
+            } else {
+                return message.ERROR_NOT_FOUND //404
+            }
+        } else {
+            return message.ERROR_INTERNAL_SERVER_DBA // 500
+        }
+    }
+}
+
 module.exports={
     getBuscarNotif,
-    getListarNotif
+    getListarNotif,
+    getBuscarNotifByVestibular
 }
