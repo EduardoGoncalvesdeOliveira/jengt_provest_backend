@@ -14,6 +14,12 @@ const ERROR_INVALID_ID = {
     message: "O ID encaminhado na requisição não é válido."
 }
 
+const ERROR_INVALID_TEXT = {
+    status: false, 
+    status_code: 400, 
+    message: "Texto da redação não fornecido."
+}
+
 const ERROR_REQUIRED_FIELDS = {
     status: false, 
     status_code: 400, 
@@ -79,6 +85,7 @@ const VALIDATED_ITEM = {
 
 module.exports = {
     ERROR_INVALID_ID,
+    ERROR_INVALID_TEXT,
     ERROR_REQUIRED_FIELDS,
     ERROR_NOT_FOUND,
     ERROR_INTERNAL_SERVER_DBA,
