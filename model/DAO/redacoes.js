@@ -13,23 +13,21 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 //  post: inserir
-const insertAluno = async(dadosAluno) => {
+const insertRedacoes = async(dadosRedacao) => {
     try {
         let sql
-    
-        sql = `insert into tbl_aluno (nome, email, senha, icone_id, curso_id, status)values(
-                '${dadosAluno.nome}',
-                '${dadosAluno.email}',
-                md5('${dadosAluno.senha}'),
-                '${dadosAluno.icone_id}',
-                '${dadosAluno.curso_id}',
+
+        sql = `insert into tbl_redacao (titulo, texto, tema_id, status)values(
+                '${dadosRedacao.titulo}',
+                '${dadosRedacao.texto}',
+                ${dadosRedacao.tema_id},
                true
             )`
             
             // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
             // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
             let result = await prisma.$executeRawUnsafe(sql)
-
+//console.log(result);
         // validação para verificar se o insert funcionou no DB
         if(result){
             return true
@@ -43,21 +41,19 @@ const insertAluno = async(dadosAluno) => {
     }
 }
 
-// put: atualizar um aluno existente filtrando pelo ID
-const updateAluno = async(dadosAluno, id) => {
+// put: atualizar redação existente filtrando pelo ID
+const updateRedacao = async(dadosRedacao, id) => {
     try {
         let sql 
 
-        sql = `update tbl_aluno set 
-                                            nome = "${dadosAluno.nome}",
-                                            email = "${dadosAluno.email}",
-                                            icone_id = "${dadosAluno.icone_id}",
-                                            curso_id = "${dadosAluno.curso_id}"
+        sql = `update tbl_redacao set 
+                                            titulo = "${dadosRedacao.titulo}",
+                                            texto = "${dadosRedacao.texto}",
+                                            tema_id = ${dadosRedacao.tema_id}
                                             where id = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
-
-
+        console.log(result);
         // validação para verificar se o insert funcionou no DB
         if(result){
             return true
@@ -70,52 +66,22 @@ const updateAluno = async(dadosAluno, id) => {
     }
 }
 
-// delete/put: método put apenas trocando o status, para "esconder" um aluno filtrando pelo ID
-const updateDeleteAluno = async(id) => {
-    try {
-        let sql = `update tbl_aluno set status = false where id = ${id}`
-
-        // executa o scriptSQL no BD e recebe o retorno dos dados na variável
-        let rsAluno = await prisma.$executeRawUnsafe(sql)
-        
-        return rsAluno
-
-    } catch (error) {
-        return false
-    }
-}
-
-// put: método put apenas trocando o status, para aparecer um aluno antes escondido
-const updateRecoverAluno = async(id) => {
-    try {
-        let sql = `update tbl_aluno set status = true where id = ${id}`
-
-        // executa o scriptSQL no BD e recebe o retorno dos dados na variável
-        let rsAluno = await prisma.$executeRawUnsafe(sql)
-        
-        return rsAluno
-
-    } catch (error) {
-        return false
-    }
-}
-
-// get: listar todos os alunos
-const selectAllAlunos = async () => {
+// get: listar todos as redacoes
+const selectAllRedacoes = async () => {
 
     try {
-        let sql = `select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status 
-                    from tbl_aluno 
-                    inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
+        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
+                    from tbl_redacao 
+                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id 
                     order by id desc`
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
+        let rsRedacao = await prisma.$queryRawUnsafe(sql)
 
-        return rsAluno
+        return rsRedacao
 
     } catch (error) {
         return false
@@ -123,18 +89,19 @@ const selectAllAlunos = async () => {
 }
 
 // get: buscar o aluno existente filtrando pelo ID
-const selectByIdAluno = async (id) => {
+const selectByIdRedacao = async (id) => {
 
     try {
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
-                    inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
-                    where tbl_aluno.id=${id}`
+        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
+                    from tbl_redacao 
+                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id  
+                    where tbl_redacao.id=${id}`
 
         // executa no DBA o script SQL
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
-        return rsAluno
+        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        return rsRedacao
 
     } catch (error) {
         console.log(error);
@@ -143,17 +110,18 @@ const selectByIdAluno = async (id) => {
 }
 
 // get: buscar o aluno existente filtrando pelo nome
-const selectByNome = async (nome) => {
+const selectByTitulo = async (titulo) => {
     
     try {
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
-                    inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
-                    where tbl_aluno.nome like '%${nome}%' and status=true`
+        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
+                    from tbl_redacao 
+                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id
+                    where tbl_redacao.titulo like '%${titulo}%'`
 
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
+        let rsRedacao = await prisma.$queryRawUnsafe(sql)
 
-        return rsAluno
+        return rsRedacao
         
     } catch (error) {
         return false
@@ -164,54 +132,23 @@ const selectByNome = async (nome) => {
 const selectLastId = async () => {
     try {
 
-        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_aluno limit 1' 
+        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_redacao limit 1' 
 
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
+        let rsRedacao = await prisma.$queryRawUnsafe(sql)
 
-        return rsAluno
+        return rsRedacao
 
     } catch (error) {
         return false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
     }
 }
 
-// set: atualizar senha
-const updateAlunoSenha = async (dadosAluno, idAluno) => {
-
-    try {
-        let sql = `update tbl_aluno set senha = md5('${dadosAluno.senha}') where id = ${idAluno}`   
-        let resultStatus = await prisma.$executeRawUnsafe(sql)
-        if(resultStatus)
-            return true
-        else
-            return false
-    } catch (error) {
-        return false
-    }
-
-}
-
-// get: login
-const selectValidacaoAluno = async (emailAluno, senhaAluno) => {
-    try {
-        let sql = `select email, senha from tbl_aluno where email = '${emailAluno}' and senha = md5('${senhaAluno}')`
-        let rsAluno = await prisma.$queryRawUnsafe(sql)
-        return rsAluno        
-    } catch (error) {
-        return false
-    }
-
-}
 
 module.exports={
-    insertAluno,
-    updateAluno,
-    updateDeleteAluno,
-    updateRecoverAluno,
-    selectAllAlunos,
-    selectByIdAluno,
-    selectByNome,
-    selectLastId,
-    updateAlunoSenha,
-    selectValidacaoAluno
+    insertRedacoes,
+    updateRedacao,
+    selectAllRedacoes,
+    selectByIdRedacao,
+    selectByTitulo,
+    selectLastId
 }
