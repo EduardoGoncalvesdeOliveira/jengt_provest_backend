@@ -51,6 +51,7 @@ const controllerTopicos = require('./controller/controller-topicos.js')
 const controllerIcones = require('./controller/controller-icones.js')
 const controllerNot = require('./controller/controller-notif.js')
 const controllerTemas = require('./controller/controller-temas.js')
+const controllerRedacoes = require('./controller/controller-redacoes.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -106,14 +107,13 @@ app.post('/v1/jengt_provest/aluno', cors(), bodyParserJSON, async(request, respo
 
 // endpoint: editar icone
 app.put('/v1/jengt_provest/aluno/icone/', cors(), async(request, response, next) => {
-    let icone = request.query.aluno
-    let id = request.query.icone
-    let dadosAluno = await controllerAluno.setAtualizarIcone(icone, id)
+    let aluno = request.query.aluno
+    let icone = request.query.icone
+    let dadosAluno = await controllerAluno.setAtualizarIcone(icone, aluno)
 
     response.status(dadosAluno.status_code)
     response.json(dadosAluno)
 })
-
 
 // endpoint: editar o status do aluno para false para "exclui-lo"
 app.put('/v1/jengt_provest/aluno/excluir/:id', cors(), async(request, response, next) => {
@@ -271,6 +271,17 @@ app.put('/v1/jengt_provest/prof/:id', cors(), bodyParserJSON, async(request, res
     
     response.status(resultDados.status_code)
     response.json(resultDados)
+})
+
+// endpoint: editar icone
+app.put('/v1/jengt_provest/icone/prof/', cors(), async(request, response, next) => {
+
+    let icone = request.query.icone
+    let prof = request.query.prof
+    let dadosProf = await controllerProf.setAtualizarIcone(icone, prof)
+
+    response.status(dadosProf.status_code)
+    response.json(dadosProf)
 })
 
 // endpoint: editar a senha do aluno
@@ -467,6 +478,73 @@ app.get('/v1/jengt_provest/tema/:id', cors(), async(request, response, next) => 
 
     response.status(dadosTema.status_code)
     response.json(dadosTema)
+})
+
+    //#region REDACOES
+// endpoints: listar os alunos
+app.get('/v1/jengt_provest/redacoes', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados do admin
+    let dadosRedacao = await controllerRedacoes.getListarRedacoes()
+
+    response.status(dadosRedacao.status_code)
+    response.json(dadosRedacao)
+})
+
+// endpoint: filtrar pelo nome
+app.get('/v1/jengt_provest/redacao/filtro', cors(), async(request, response, next) => {
+    let filtro = request.query.titulo
+
+    // chama a função para retornar os dados do admin
+    let dadosRedacao = await controllerRedacoes.getRedacaoByTitulo(filtro)
+
+    response.status(dadosRedacao.status_code)
+    response.json(dadosRedacao)
+})
+
+// endpoint: retorna os dados do aluno, filtrando pelo ID
+app.get('/v1/jengt_provest/redacao/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idRedacao = request.params.id
+
+    let dadosRedacao = await controllerRedacoes.getBuscarRedacao(idRedacao)
+
+    response.status(dadosRedacao.status_code)
+    response.json(dadosRedacao)
+})
+
+// endpoint: inserir novos alunos no Banco de Dados
+    // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/redacao', cors(), bodyParserJSON, async(request, response, next) => {
+
+        // recebe o content type da requisição (A API deve receber somente application/json)
+        let contentType = request.headers['content-type']
+
+        //recebe os dados encaminhados na requisição no body(JSON)
+        let dadosBody = request.body
+    
+        // encaminha os dados da requisição para a controller enviar para o BD
+        let resultDados = await controllerRedacoes.setNovaRedacao(dadosBody, contentType)
+        //console.log(resultDados);
+        response.status(resultDados.status_code)
+        response.json(resultDados)
+    
+})
+
+// endpoint: editar os dados do aluno
+app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async(request, response, next) => {
+    let redacao = request.params.id
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerRedacoes.setAtualizarRedacao(dadosBody, contentType, redacao)
+    
+    response.status(resultDados.status_code)
+    response.json(resultDados)
 })
 /*************************************************************************/
 
