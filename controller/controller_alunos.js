@@ -1,7 +1,10 @@
-// objetivo: Arquivo responsavel pela interação entre o APP e o Model, que teremos todas as tratativas e regra de negocio para o crud de Usuarios
-// data: 03/09/2024 - inicio
-// autor: Eduardo Gonçalves de Oliveira
-// versao: 1.0
+/***************************************************************************************
+* Objetivo: arquivo responsável pela interação entre o app e a model, que teremos todas
+*           as tratativas e a regra de negócio para o CRUD de alunos
+* Data: 03/09/2024 - inicio
+* Autor: Eduardo Gonçalves de Oliveira
+* Versão: 1.0
+***************************************************************************************/
 
 // import do arquivo DAO para manipular dados do BD
 const alunoDAO = require('../model/DAO/alunos.js')
@@ -124,14 +127,13 @@ const setAtualizarIcone = async (icone, id) => {
 
             if (
                 icone == '' || icone == undefined || icone == false ||
-                id == '' || id == undefined || id == false
+                id == ''    || id == undefined    || id == false
             ){
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
                 
                 //envia os dados para o DAO inserir no BD
                 let iconeAtt = await alunoDAO.updateIcone(icone, id);                
-console.log(iconeAtt);
 
                 //validação para verificar se os dados foram inseridos pelo DAO no BD 
                 if (iconeAtt) {
