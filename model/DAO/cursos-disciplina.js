@@ -1,7 +1,7 @@
 /***************************************************************************************
 * Objetivo: criar a integração com o banco de dados MySQL para fazer o CRUD
-*           de cursos
-* Data: 19/09/2024
+*           da tabela intermediaria de cursos-disciplinas
+* Data: 10/10/2024
 * Autor: Gabriela Fernandes
 * Versão: 1.0
 ***************************************************************************************/
@@ -13,41 +13,13 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 // post: inserir curso
-const insertCurso = async(dadosCurso) => {
+const insertDisciplinaC = async(dadosCurso) => {
     try {
         let sql
     
-        sql = `insert into tbl_cursos (nome)values(
-                '${dadosCurso.nome}'
+        sql = `insert into tbl_cursos_disciplina(curso_id, disciplina_id)values
+                '${dadosCurso.curso_id}'
             )`
-
-        // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
-        // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        // validação para verificar se o insert funcionou no DB
-        if(result){
-            return true
-        } else {
-            return false
-        }
-
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}
-
-const insertDisciplinaCurso = async(idCurso, idDisciplina)=>{
-    try {
-        let sql
-    
-        sql = `insert into tbl_cursos_disciplina (curso_id, disciplina_id)values(
-                ${idCurso}, ${idDisciplina}
-            )`
-
-            console.log(sql);
-            
 
         // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
         // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
@@ -159,7 +131,6 @@ const selectLastId = async () => {
 
 module.exports={
     insertCurso,
-    insertDisciplinaCurso,
     updateCurso,
     selectAllCursos,
     selectByIdCurso,
