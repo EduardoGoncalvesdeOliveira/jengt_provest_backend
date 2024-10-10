@@ -133,6 +133,43 @@ const setEditarExcluirProf = async (id) => {
     }
 }
 
+// put: função para atualizar um icone existente
+const setAtualizarIcone = async (icone, id) => {
+    try {        
+            // cria a variável JSON
+            let resultDadosProf = {}
+
+            if (
+                icone == '' || icone == undefined || icone == false ||
+                id == ''    || id == undefined    || id == false
+            ){
+                return message.ERROR_REQUIRED_FIELDS // 400
+            } else {
+                
+                console.log(icone, id);
+                
+                //envia os dados para o DAO inserir no BD
+                let iconeAtt = await professorDAO.updateIcone(icone, id);                
+
+                //validação para verificar se os dados foram inseridos pelo DAO no BD 
+                if (iconeAtt) {
+
+                    // cria o padrão de JSON para retorno dos dados criados no DB
+                    resultDadosProf.status = message.SUCCESS_UPDATED_ITEM.status
+                    resultDadosProf.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                    resultDadosProf.message = message.SUCCESS_UPDATED_ITEM.message
+
+                    return resultDadosProf
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_DBA // 500
+                }
+            }
+
+    } catch (error) {
+        console.log(error);
+        return message.ERROR_INTERNAL_SERVER // 500
+    }
+}
 
 // put: função para achar um prof existente
 const setEditarAtivarProf = async (id) => {
@@ -358,6 +395,7 @@ const getValidarProf = async (dadosProf, contentType) => {
 module.exports = {
     setNovoProfessor,
     setAtualizarProfessor,
+    setAtualizarIcone,
     setEditarExcluirProf,
     setEditarAtivarProf,
     getListarProfessores,

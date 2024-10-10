@@ -69,6 +69,21 @@ const updateProfessor = async(dadosProf, id) => {
     }
 }
 
+// get: atualizar icone do professor
+const updateIcone = async(idIcone, id) => {
+    try {
+        let sql = `call updateIconeProf(${id}, ${idIcone})`
+        console.log(sql);
+        // executa o scriptSQL no BD e recebe o retorno dos dados na variável
+        let rsProf = await prisma.$executeRawUnsafe(sql)
+        
+        return rsProf
+
+    } catch (error) {
+        return false
+    }
+}
+
 // delete/put: método put apenas trocando o status, para "esconder" um prof filtrando pelo ID
 const updateDeleteProfessor = async(id) => {
     try {
@@ -210,6 +225,7 @@ const selectValidacaoProf = async (emailProf, senhaProf) => {
 module.exports={
     insertProfessor,
     updateProfessor,
+    updateIcone,
     updateDeleteProfessor,
     updateRecoverProfessor,
     selectAllProfessores,
