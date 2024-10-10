@@ -22,6 +22,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const axios = require('axios');
 
 // criando objeto app
 const app = express()
@@ -51,7 +52,8 @@ const controllerTopicos = require('./controller/controller-topicos.js')
 const controllerIcones = require('./controller/controller-icones.js')
 const controllerNot = require('./controller/controller-notif.js')
 const controllerTemas = require('./controller/controller-temas.js')
-const controllerRedacoes = require('./controller/controller-redacoes.js')
+const controllerRedacoes = require('./controller/controller-redacoes.js');
+const message = require('./modulo/config.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -369,6 +371,25 @@ app.get('/v1/jengt_provest/icones', cors(), async(request, response, next) => {
 
 // #region CURSOS
 /****************************** CURSOS ****************************/
+
+// endpoint: validacao de usuario
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/cuso/', cors(), bodyParserJSON, async(request, response, next) => {
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerCurso.setNovoCurso(dadosBody, contentType)
+    
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+    
+})
+
 // endpoints: listar tudo
 app.get('/v1/jengt_provest/cursos', cors(), async(request, response, next) => {
     // chama a função para retornar os dados
@@ -545,6 +566,43 @@ app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async(request, 
     
     response.status(resultDados.status_code)
     response.json(resultDados)
+})
+
+//#region correção
+app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async(request, response, next) => {
+  const dadosBody = request.body
+
+  if (!dadosBody) {
+    return message.ERROR_INVALID_TEXT // 400
+  }
+
+  try {
+    const response = await axios.post('https://api-generativa.google.com/v1/generateText', {
+      model: 'palm', 
+      prompt: dadosBody.texto,
+    }, {
+      headers: {
+        'Authorization': 'AIzaSyClEM2tNivB9FoeJUYI_Cbg331CyqR-LZQ',  
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const resultado = response.data
+    console.log(resultado);
+    
+    const correcao = {
+      ortografia: resultado.ortografia || 50,
+      pontuacao: resultado.pontuacao || 70,
+      coerencia: resultado.coerencia || 60,
+      paragrafo: resultado.paragrafo || 100,
+      notaFinal: resultado.notaFinal || 680,
+    }
+    res.json(correcao)
+
+  } catch (error) {
+    console.error('Erro ao enviar a redação para correção:', error);
+    response.status(500).json({ error: 'Erro ao corrigir a redação.' });
+  }
 })
 /*************************************************************************/
 
