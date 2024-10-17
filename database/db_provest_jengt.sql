@@ -1,6 +1,6 @@
-create database db_provest_jengt;
+create database db_jengt_provest;
 
-use db_provest_jengt;
+use db_jengt_provest;
 
 create table tbl_tema
 (
@@ -216,6 +216,26 @@ create table tbl_vest_fases
     
     foreign key (vestibular_id) references tbl_vestibulares(id),
     foreign key (fase_id) references tbl_fases(id)
+);
+
+create table tbl_notificacoes 
+(
+	id int primary key auto_increment not null,
+    titulo varchar(100) not null,
+    descricao varchar (255) not null,
+    vest_fases_id int not null,
+    
+    foreign key (vest_fases_id) references tbl_vest_fases(id)
+);
+
+create table tbl_not_aluno
+(
+	id int primary key auto_increment not null,
+	notificacoes_id int,
+    aluno_id int,
+    
+    foreign key (notificacoes_id) references tbl_notificacoes(id),
+    foreign key (aluno_id) references tbl_aluno(id)
 );
 
 -- CONSULTAS
