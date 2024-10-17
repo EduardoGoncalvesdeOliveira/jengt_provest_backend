@@ -185,7 +185,7 @@ create table tbl_cronograma
     foreign key (disciplina_id) references tbl_disciplina(id)
 );
 
-create table tbl_intituicoes
+create table tbl_instituicoes
 (
 	id integer primary key auto_increment not null,
     nome varchar(200) not null
@@ -199,7 +199,7 @@ create table tbl_vestibulares
     instituicao_id int not null,
     status boolean,
     
-    foreign key (instituicao_id) references tbl_intituicoes(id) 
+    foreign key (instituicao_id) references tbl_instituicoes(id) 
 );
 
 create table tbl_fases
