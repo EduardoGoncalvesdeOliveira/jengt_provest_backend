@@ -31,18 +31,17 @@ const selectByIdTema = async (id) => {
 const selectAllTemas = async () => {
 
     try {
-        let sql = `select nome, descricao from tbl_tema order by id desc`
-    
+        let sql = `select id, nome, descricao from tbl_tema order by id desc`
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
-    
+        
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
         let rsTemas = await prisma.$queryRawUnsafe(sql)        
 
         return rsTemas
 
     } catch (error) {
-        //console.log(error)
+        console.log(error)
         return false
     }
 }
