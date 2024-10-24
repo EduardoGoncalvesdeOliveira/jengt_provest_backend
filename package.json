@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build": "npm install",
     "prisma": "npx prisma db pull && npx prisma generate",
     "start": "node ./app.js"
   },
@@ -10,6 +11,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "prisma": "^5.19.1"
+    "prisma": "^5.19.1",
+    "yarn": "^1.22.22"
   }
 }
