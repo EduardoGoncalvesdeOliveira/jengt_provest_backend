@@ -391,6 +391,45 @@ const getValidarProf = async (dadosProf, contentType) => {
     }
 }
 
+// get: função para buscar professores pela disciplina
+const getProfByDisc = async (id) => {
+    // recebe o id
+    let idDisciplina = id;
+    let professoresJSON = {}
+
+    // validação para ID vazio, indefinido ou não numérico
+    if (idDisciplina == '' || idDisciplina == undefined || isNaN(idDisciplina)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+        let dadosProf = await professorDAO.selectProfByDisciplina(idDisciplina)
+
+        if (dadosProf) {
+            // validação para verificar se existem dados de retorno
+            if (dadosProf.length > 0) {
+                // const promise = dadosProf.map(async (disciplinas) => {
+                //     const disciplinas = await professorDAO.selectDisciplinasByProfId(disciplinas.id)
+                //     if (professores) {
+                //         let profArray = []
+                //         professores.forEach((profs) => {
+                //             profArray.push(profs.nome)
+                //         });
+                //         disciplinas.professores = profArray
+                //     }
+                // })
+    
+                await Promise.all(promise)
+                professoresJSON.professores = dadosProf
+                professoresJSON.status_code = 200
+                return professoresJSON
+            } else {
+                return message.ERROR_NOT_FOUND //404
+            }
+
+        } else {
+            return message.ERROR_INTERNAL_SERVER_DBA ///500
+        }
+    }
+}
 
 module.exports = {
     setNovoProfessor,
@@ -402,5 +441,5 @@ module.exports = {
     getBuscarProfessor,
     getProfessorByNome,
     setAtualizarProfSenha,
-    getValidarProf
+    getProfByDisc
 }
