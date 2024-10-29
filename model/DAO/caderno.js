@@ -17,18 +17,17 @@ const insertAnotacao = async(dadosAnot) => {
     try {
         let sql
 
-        sql = `insert into tbl_caderno_aluno (titulo, texto, tema_id, status)values(
+        sql = `insert into caderno_aluno (titulo, texto, aluno_id)values(
                 '${dadosAnot.titulo}',
                 '${dadosAnot.texto}',
-                ${dadosAnot.aluno_id},
-               true
+                ${dadosAnot.aluno_id}
             )`
             
             // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
             // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
             let result = await prisma.$executeRawUnsafe(sql)
-//console.log(result);
-        // validação para verificar se o insert funcionou no DB
+
+            // validação para verificar se o insert funcionou no DB
         if(result){
             return true
         } else {
@@ -41,42 +40,67 @@ const insertAnotacao = async(dadosAnot) => {
     }
 }
 
-// get: listar todos as redacoes
-const selectAllRedacoes = async () => {
+// put: atualizar redação existente filtrando pelo ID
+const updateAnotacao = async(dadosAnot, id) => {
+    try {
+        let sql 
+
+        sql = `update caderno_aluno set 
+                                            titulo = "${dadosAnot.titulo}",
+                                            texto = "${dadosAnot.texto}",
+                                            aluno_id = ${dadosAnot.aluno_id}
+                                            where id = ${id}`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        // validação para verificar se o insert funcionou no DB
+        if(result){
+            return true
+        } else {
+            return false
+        }
+    
+    } catch (error) {
+        return false
+    }
+}
+
+// get: listar todos as anotacoes
+const selectAllAnotacoes = async () => {
 
     try {
-        let sql = `select tbl_caderno_aluno.id, tbl_caderno_aluno.titulo, tbl_caderno_aluno.texto, tbl_tema.nome as tema, tbl_caderno_aluno.status 
-                    from tbl_caderno_aluno 
-                    inner join tbl_tema on tbl_caderno_aluno.tema_id=tbl_tema.id 
+        let sql = `select caderno_aluno.id, caderno_aluno.titulo, caderno_aluno.texto 
+                    from caderno_aluno 
+                    inner join tbl_aluno on caderno_aluno.aluno_id=tbl_aluno.id 
                     order by id desc`
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
-
-        return rsRedacao
+        let rsAnot = await prisma.$queryRawUnsafe(sql)
+        console.log(rsAnot)
+        return rsAnot
 
     } catch (error) {
         return false
     }
 }
 
-// get: buscar o aluno existente filtrando pelo ID
-const selectByIdRedacao = async (id) => {
+// get: buscar a anotacao existente filtrando pelo ID
+const selectByIdAnot = async (id) => {
 
     try {
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_caderno_aluno.id, tbl_caderno_aluno.titulo, tbl_caderno_aluno.texto, tbl_tema.nome as tema, tbl_caderno_aluno.status 
-                    from tbl_caderno_aluno 
-                    inner join tbl_tema on tbl_caderno_aluno.tema_id=tbl_tema.id  
-                    where tbl_caderno_aluno.id=${id}`
+        let sql = `select caderno_aluno.id, caderno_aluno.titulo, caderno_aluno.texto 
+                    from caderno_aluno
+                    inner join tbl_aluno on caderno_aluno.aluno_id=tbl_aluno.id  
+                    where caderno_aluno.id=${id}`
 
         // executa no DBA o script SQL
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
-        return rsRedacao
+        let rsAnot = await prisma.$queryRawUnsafe(sql)
+        return rsAnot
 
     } catch (error) {
         console.log(error);
@@ -84,19 +108,19 @@ const selectByIdRedacao = async (id) => {
     }
 }
 
-// get: buscar o aluno existente filtrando pelo nome
+// get: buscar a anotacao existente filtrando pelo nome
 const selectByTitulo = async (titulo) => {
     
     try {
-        let sql = `select tbl_caderno_aluno.id, tbl_caderno_aluno.titulo, tbl_caderno_aluno.texto, tbl_tema.nome as tema, tbl_caderno_aluno.status 
-                    from tbl_caderno_aluno 
-                    inner join tbl_tema on tbl_caderno_aluno.tema_id=tbl_tema.id
-                    where tbl_caderno_aluno.titulo like '%${titulo}%'`
+        let sql = `select caderno_aluno.id, caderno_aluno.titulo, caderno_aluno.texto
+                    from caderno_aluno 
+                    inner join tbl_aluno on caderno_aluno.aluno_id=tbl_aluno.id
+                    where caderno_aluno.titulo like '%${titulo}%'`
 
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        let rsAnot = await prisma.$queryRawUnsafe(sql)
 
-        return rsRedacao
+        return rsAnot
         
     } catch (error) {
         return false
@@ -107,11 +131,11 @@ const selectByTitulo = async (titulo) => {
 const selectLastId = async () => {
     try {
 
-        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_caderno_aluno limit 1' 
+        let sql = 'select cast(last_insert_id() as DECIMAL) as id from caderno_aluno limit 1' 
 
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        let rsAnot = await prisma.$queryRawUnsafe(sql)
 
-        return rsRedacao
+        return rsAnot
 
     } catch (error) {
         return false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
@@ -120,10 +144,10 @@ const selectLastId = async () => {
 
 
 module.exports={
-    insertRedacoes,
-    updateRedacao,
-    selectAllRedacoes,
-    selectByIdRedacao,
+    insertAnotacao,
+    updateAnotacao,
+    selectAllAnotacoes,
+    selectByIdAnot,
     selectByTitulo,
     selectLastId
 }
