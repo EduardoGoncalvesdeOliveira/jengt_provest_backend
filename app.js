@@ -52,7 +52,8 @@ const controllerTopicos = require('./controller/controller-topicos.js')
 const controllerIcones = require('./controller/controller-icones.js')
 const controllerNot = require('./controller/controller-notif.js')
 const controllerTemas = require('./controller/controller-temas.js')
-const controllerRedacoes = require('./controller/controller-redacoes.js');
+const controllerRedacoes = require('./controller/controller-redacoes.js')
+const controllerCaderno = require('./controller/controller-caderno.js')
 const message = require('./modulo/config.js')
 /*********************************************************************************/
 
@@ -618,32 +619,66 @@ const run = async() => {
 // endpoints: listar tudo
 app.get('/v1/jengt_provest/caderno', cors(), async(request, response, next) => {
   // chama a função para retornar os dados
-  let dadosNot = await controllerNot.getListarNotif()
+  let dadosAnot = await controllerCaderno.getListarAnotacoes()
 
-  response.status(dadosNot.status_code)
-  response.json(dadosNot)
+  response.status(dadosAnot.status_code)
+  response.json(dadosAnot)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/notificacao/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/caderno/:id', cors(), async(request, response, next) => {
   // recebe o id da requisição do admin
-  let idNotif = request.params.id
+  let idAnotacao = request.params.id
 
-  let dadosNot = await controllerNot.getBuscarNotif(idNotif)
+  let dadosAnot = await controllerCaderno.getBuscarAnotacao(idAnotacao)
 
-  response.status(dadosNot.status_code)
-  response.json(dadosNot)
+  response.status(dadosAnot.status_code)
+  response.json(dadosAnot)
 })
 
-// endpoint: retorna os dados, filtrando pelo vestibular
-app.get('/v1/jengt_provest/notificacoes/filtro/:vest', cors(), async(request, response, next) => {
+// endpoint: retorna os dados, filtrando pelo titulo
+app.get('/v1/jengt_provest/caderno/filtro/:titulo', cors(), async(request, response, next) => {
   // recebe o id da requisição do admin
-  let filtro = request.params.vest
+  let filtro = request.params.titulo
 
-  let dadosNot = await controllerNot.getBuscarNotifByVestibular(filtro)
+  let dadosAnot = await controllerCaderno.getAnotByTitulo(filtro)
 
-  response.status(dadosNot.status_code)
-  response.json(dadosNot)
+  response.status(dadosAnot.status_code)
+  response.json(dadosAnot)
+})
+
+// endpoint: inserir novas anotações no Banco de Dados
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/caderno', cors(), bodyParserJSON, async(request, response, next) => {
+
+        // recebe o content type da requisição (A API deve receber somente application/json)
+        let contentType = request.headers['content-type']
+
+        //recebe os dados encaminhados na requisição no body(JSON)
+        let dadosBody = request.body
+
+        // encaminha os dados da requisição para a controller enviar para o BD
+        let resultDados = await controllerCaderno.setNovaAnotacao(dadosBody, contentType)
+
+        response.status(resultDados.status_code)
+        response.json(resultDados)
+})
+
+// endpoint: editar os dados da anotação
+app.put('/v1/jengt_provest/caderno/:id', cors(), bodyParserJSON, async(request, response, next) => {
+    let anotacao = request.params.id
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerCaderno.setAtualizarAnotacao(dadosBody, contentType, anotacao)
+
+    response.status(resultDados.status_code)
+    response.json(resultDados)
 })
 /*************************************************************************/
 
