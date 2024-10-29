@@ -38,34 +38,6 @@ const insertCurso = async(dadosCurso) => {
     }
 }
 
-const insertDisciplinaCurso = async(idCurso, idDisciplina)=>{
-    try {
-        let sql
-    
-        sql = `insert into tbl_cursos_disciplina (curso_id, disciplina_id)values(
-                ${idCurso}, ${idDisciplina}
-            )`
-
-            console.log(sql);
-            
-
-        // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
-        // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        // validação para verificar se o insert funcionou no DB
-        if(result){
-            return true
-        } else {
-            return false
-        }
-
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}
-
 // put: atualizar um curso existente filtrando pelo ID
 const updateCurso = async(dadosCurso, id) => {
     try {
@@ -157,12 +129,84 @@ const selectLastId = async () => {
     }
 }
 
+// #region cursos-disciplina
+const insertCursoDisciplina = async(idCurso, idDisciplina)=>{
+    try {
+        let sql
+    
+        sql = `insert into tbl_cursos_disciplina (curso_id, disciplina_id)values(
+                ${idCurso}, ${idDisciplina}
+            )`
+            
+
+        // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
+        // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        // validação para verificar se o insert funcionou no DB
+        if(result){
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
+// get: listar todos os cursos
+const selectAllCursosDisciplina = async () => {
+
+    try {
+        let sql = `select tbl_cursos_disciplina.id, tbl_cursos.nome as curso, tbl_disciplina.nome as disciplina from tbl_cursos_disciplina 
+                    inner join tbl_cursos on tbl_cursos_disciplina.curso_id=tbl_cursos.id
+                    inner join tbl_disciplina on tbl_cursos_disciplina.disciplina_id=tbl_disciplina.id
+                    order by id desc`
+    
+        // $queryrawUnsafe(‘encaminha apenas a variavel’)
+        // $queryRaw(‘codigo digitado aqui’)
+    
+        // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
+        let rsCursoDisc = await prisma.$queryRawUnsafe(sql)
+
+        return rsCursoDisc
+
+    } catch (error) {
+        return false
+    }
+}
+
+// get: buscar o curso existente filtrando pelo ID
+const selectDiscByCurso = async (id) => {
+
+    try {
+
+        // realiza a busca do curso pelo id
+        let sql = `select tbl_cursos_disciplina.id, tbl_disciplina.nome as disciplina from tbl_cursos_disciplina 
+                    inner join tbl_cursos on tbl_cursos_disciplina.curso_id=tbl_cursos.id
+                    inner join tbl_disciplina on tbl_cursos_disciplina.disciplina_id=tbl_disciplina.id
+                    where tbl_cursos.nome like '%jorn%' 
+                    where tbl_cursos.nome like '%${nome}%'`
+
+        // executa no DBA o script SQL
+        let rsCurso = await prisma.$queryRawUnsafe(sql)
+        return rsCurso
+
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 module.exports={
     insertCurso,
-    insertDisciplinaCurso,
     updateCurso,
     selectAllCursos,
     selectByIdCurso,
     selectByNome,
-    selectLastId
+    selectLastId,
+
+
 }
