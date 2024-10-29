@@ -208,5 +208,7 @@ module.exports={
     selectByNome,
     selectLastId,
 
-
+    insertCursoDisciplina,
+    selectAllCursosDisciplina,
+    selectDiscByCurso
 }
