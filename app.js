@@ -191,6 +191,16 @@ app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async(request
 
 // #region PROF
 /****************************** PROF ****************************/
+
+// endpoints: listar professores pela disciplina
+app.get('/v1/jengt_provest/profs/disciplina', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados do admin
+    let dadosProfs = await controllerProf.getProfByDisc()
+
+    response.status(dadosProfs.status_code)
+    response.json(dadosProfs)
+})
+
 // endpoints: listar tudo
 app.get('/v1/jengt_provest/profs', cors(), async(request, response, next) => {
     // chama a função para retornar os dados do admin
@@ -569,18 +579,26 @@ app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async(request, 
     response.json(resultDados)
 })
 
-//#region correção
-app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async(request, response, next) => {
-  const dadosBody = request.body
-
-  if (!dadosBody) {
-    return message.ERROR_INVALID_TEXT // 400
-  }
-  const {
+const {
     GoogleGenerativeAI,
     HarmCategory,
     HarmBlockThreshold,
   } = require("@google/generative-ai");
+
+
+//#region correção
+app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async(request, response, next) => {
+  
+    const redacao = request.body
+  
+    const dadosBody = JSON.stringify({redacao})
+
+    console.log(dadosBody);
+
+  if (!dadosBody) {
+    return message.ERROR_INVALID_TEXT // 400
+  }
+
   const { GoogleAIFileManager } = require("@google/generative-ai/server");
   
   const apiKey = "AIzaSyDUCeGhCXD2bNQ_Y_07j4Wd6QFUXMvWX4U";
@@ -607,6 +625,9 @@ const run = async() => {
     const redacao = dadosBody
   
     const result = await chatSession.sendMessage(redacao);
+
+    response.json(result)
+
     console.log(result.response.text());
   }
   
