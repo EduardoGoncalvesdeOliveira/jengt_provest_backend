@@ -138,6 +138,8 @@ const setNovoCurso = async (dadosCurso, contentType) => {
     }
 }
 
+
+
 module.exports = {
     setNovoCurso,
     getListarCursos,
