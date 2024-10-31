@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -36,23 +37,23 @@ model tbl_aluno {
   curso_id         Int
   status           Boolean?
   caderno_aluno    caderno_aluno[]
-  tbl_icones       tbl_icones         @relation(fields: [icone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_ibfk_1")
-  tbl_cursos       tbl_cursos         @relation(fields: [curso_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_ibfk_2")
+  tbl_icones       tbl_icones         @relation(fields: [icone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_icone_fk")
+  tbl_cursos       tbl_cursos         @relation(fields: [curso_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_curso_fk")
   tbl_aluno_agenda tbl_aluno_agenda[]
-  tbl_not_aluno    tbl_not_aluno[]
 
   @@index([curso_id], map: "curso_id")
   @@index([icone_id], map: "icone_id")
 }
+
 
 model tbl_aluno_agenda {
   id             Int              @id @default(autoincrement())
   semana_id      Int
   horario_id     Int
   aluno_id       Int
-  tbl_semana     tbl_semana       @relation(fields: [semana_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_agenda_ibfk_1")
-  tbl_horarios   tbl_horarios     @relation(fields: [horario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_agenda_ibfk_2")
-  tbl_aluno      tbl_aluno        @relation(fields: [aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_agenda_ibfk_2")
+  tbl_semana     tbl_semana       @relation(fields: [semana_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_agenda_semana_fk")
+  tbl_horarios   tbl_horarios     @relation(fields: [horario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_agenda_horario_fk")
+  tbl_aluno      tbl_aluno        @relation(fields: [aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_aluno_agenda_aluno_fk")
   tbl_cronograma tbl_cronograma[]
 
   @@index([aluno_id], map: "aluno_id")
@@ -64,8 +65,8 @@ model tbl_cronograma {
   id               Int              @id @default(autoincrement())
   agenda_aluno_id  Int
   disciplina_id    Int
-  tbl_aluno_agenda tbl_aluno_agenda @relation(fields: [agenda_aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cronograma_ibfk_1")
-  tbl_disciplina   tbl_disciplina   @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cronograma_ibfk_2")
+  tbl_aluno_agenda tbl_aluno_agenda @relation(fields: [agenda_aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cronograma_agenda_fk")
+  tbl_disciplina   tbl_disciplina   @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cronograma_disciplina_fk")
 
   @@index([agenda_aluno_id], map: "agenda_aluno_id")
   @@index([disciplina_id], map: "disciplina_id")
@@ -82,8 +83,8 @@ model tbl_cursos_disciplina {
   id             Int            @id @default(autoincrement())
   curso_id       Int
   disciplina_id  Int
-  tbl_cursos     tbl_cursos     @relation(fields: [curso_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cursos_disciplina_ibfk_1")
-  tbl_disciplina tbl_disciplina @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cursos_disciplina_ibfk_2")
+  tbl_cursos     tbl_cursos     @relation(fields: [curso_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cursos_disciplina_curso_fk")
+  tbl_disciplina tbl_disciplina @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_cursos_disciplina_disciplina_fk")
 
   @@index([curso_id], map: "curso_id")
   @@index([disciplina_id], map: "disciplina_id")
@@ -102,8 +103,8 @@ model tbl_disciplina_topico {
   id             Int            @id @default(autoincrement())
   disciplina_id  Int
   topico_id      Int
-  tbl_disciplina tbl_disciplina @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_disciplina_topico_ibfk_1")
-  tbl_topicos    tbl_topicos    @relation(fields: [topico_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_disciplina_topico_ibfk_2")
+  tbl_disciplina tbl_disciplina @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_disciplina_topico_disciplina_fk")
+  tbl_topicos    tbl_topicos    @relation(fields: [topico_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_disciplina_topico_topico_fk")
 
   @@index([disciplina_id], map: "disciplina_id")
   @@index([topico_id], map: "topico_id")
@@ -142,9 +143,9 @@ model tbl_prof_agenda {
   semana_id     Int
   horario_id    Int
   professor_id  Int
-  tbl_semana    tbl_semana    @relation(fields: [semana_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_agenda_ibfk_1")
-  tbl_horarios  tbl_horarios  @relation(fields: [horario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_agenda_ibfk_2")
-  tbl_professor tbl_professor @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_agenda_ibfk_2")
+  tbl_semana    tbl_semana    @relation(fields: [semana_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_agenda_semana_fk")
+  tbl_horarios  tbl_horarios  @relation(fields: [horario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_agenda_horario_fk")
+  tbl_professor tbl_professor @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_agenda_professor_fk")
 
   @@index([professor_id], map: "professor_id")
   @@index([semana_id], map: "semana_id")
@@ -155,8 +156,8 @@ model tbl_prof_disciplinas {
   id             Int            @id @default(autoincrement())
   disciplina_id  Int
   professor_id   Int
-  tbl_disciplina tbl_disciplina @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_disciplinas_ibfk_1")
-  tbl_professor  tbl_professor  @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_disciplinas_ibfk_2")
+  tbl_disciplina tbl_disciplina @relation(fields: [disciplina_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_disciplinas_disciplina_fk")
+  tbl_professor  tbl_professor  @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_prof_disciplinas_professor_fk")
 
   @@index([disciplina_id], map: "disciplina_id")
   @@index([professor_id], map: "professor_id")
@@ -168,105 +169,31 @@ model tbl_professor {
   email                String                 @db.VarChar(150)
   senha                String                 @db.VarChar(15)
   icone_id             Int
-  status               Boolean?
   tbl_prof_agenda      tbl_prof_agenda[]
   tbl_prof_disciplinas tbl_prof_disciplinas[]
-  tbl_icones           tbl_icones             @relation(fields: [icone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_professor_ibfk_1")
+  tbl_icones           tbl_icones            @relation(fields: [icone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_professor_icone_fk")
 
   @@index([icone_id], map: "icone_id")
 }
 
-model tbl_redacao {
-  id       Int      @id @default(autoincrement())
-  titulo   String   @db.VarChar(70)
-  texto    String   @db.Text
-  tema_id  Int
-  status   Boolean?
-  tbl_tema tbl_tema @relation(fields: [tema_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_redacao_ibfk_1")
-
-  @@index([tema_id], map: "tema_id")
-}
-
 model tbl_semana {
-  id               Int                @id @default(autoincrement())
-  nome             String             @db.VarChar(3)
-  tbl_aluno_agenda tbl_aluno_agenda[]
-  tbl_prof_agenda  tbl_prof_agenda[]
-}
-
-model tbl_tema {
-  id          Int           @id @default(autoincrement())
-  nome        String        @db.VarChar(255)
-  descricao   String        @db.VarChar(255)
-  tbl_redacao tbl_redacao[]
+  id                Int                @id @default(autoincrement())
+  semana            String?            @db.VarChar(45)
+  tbl_aluno_agenda  tbl_aluno_agenda[]
+  tbl_prof_agenda   tbl_prof_agenda[]
 }
 
 model tbl_topicos {
   id                    Int                     @id @default(autoincrement())
-  nome                  String                  @db.Text
+  descricao             String?                 @db.VarChar(300)
   tbl_disciplina_topico tbl_disciplina_topico[]
-  tbl_videoaulas        tbl_videoaulas[]
 }
 
 model tbl_vest_fases {
-  id               Int                @id @default(autoincrement())
-  vestibular_id    Int
-  fase_id          Int
-  tbl_notificacoes tbl_notificacoes[]
-  tbl_vestibulares tbl_vestibulares   @relation(fields: [vestibular_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_vest_fases_ibfk_1")
-  tbl_fases        tbl_fases          @relation(fields: [fase_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_vest_fases_ibfk_2")
+  id         Int       @id @default(autoincrement())
+  vestibular String?   @db.VarChar(45)
+  fase_id    Int
+  tbl_fases  tbl_fases @relation(fields: [fase_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_vest_fases_fase_fk")
 
   @@index([fase_id], map: "fase_id")
-  @@index([vestibular_id], map: "vestibular_id")
-}
-
-model tbl_vestibulares {
-  id              Int              @id @default(autoincrement())
-  nome            String           @db.VarChar(15)
-  data_prova      DateTime         @db.Date
-  instituicao_id  Int
-  status          Boolean?
-  tbl_vest_fases  tbl_vest_fases[]
-  tbl_intituicoes tbl_instituicoes @relation(fields: [instituicao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_vestibulares_ibfk_1")
-
-  @@index([instituicao_id], map: "instituicao_id")
-}
-
-model tbl_videoaulas {
-  id          Int         @id @default(autoincrement())
-  titulo      String      @db.VarChar(255)
-  duracao     DateTime    @db.Time(0)
-  topico_id   Int
-  status      Boolean?
-  tbl_topicos tbl_topicos @relation(fields: [topico_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_videoaulas_ibfk_1")
-
-  @@index([topico_id], map: "topico_id")
-}
-
-model tbl_instituicoes {
-  id               Int                @id @default(autoincrement())
-  nome             String             @db.VarChar(200)
-  tbl_vestibulares tbl_vestibulares[]
-}
-
-model tbl_not_aluno {
-  id               Int               @id @default(autoincrement())
-  notificacoes_id  Int?
-  aluno_id         Int?
-  tbl_notificacoes tbl_notificacoes? @relation(fields: [notificacoes_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_not_aluno_ibfk_1")
-  tbl_aluno        tbl_aluno?        @relation(fields: [aluno_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_not_aluno_ibfk_2")
-
-  @@index([aluno_id], map: "aluno_id")
-  @@index([notificacoes_id], map: "notificacoes_id")
-}
-
-model tbl_notificacoes {
-  id             Int             @id @default(autoincrement())
-  titulo         String          @db.VarChar(100)
-  descricao      String          @db.VarChar(255)
-  vest_fases_id  Int
-  tbl_not_aluno  tbl_not_aluno[]
-  tbl_vest_fases tbl_vest_fases  @relation(fields: [vest_fases_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tbl_notificacoes_ibfk_1")
-
-  @@index([vest_fases_id], map: "vest_fases_id")
 }
