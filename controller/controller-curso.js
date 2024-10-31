@@ -138,11 +138,64 @@ const setNovoCurso = async (dadosCurso, contentType) => {
     }
 }
 
+// get: função para listar todos os cursos e disciplinas existentes no DBA
+const getListarCursosDisciplinas = async () => {
+    let cursoDiscJSON = {}
+    let dadosCursoDisc = await cursoDAO.selectAllCursosDisciplina()
 
+    if (dadosCursoDisc) {
+        if (dadosCursoDisc.length > 0) {
+            cursoDiscJSON.curso_disciplina = dadosCursoDisc
+            cursoDiscJSON.qt = dadosCursoDisc.length
+            cursoDiscJSON.status_code = 200
+            return cursoDiscJSON
+        } else {
+            return message.ERROR_NOT_FOUND
+        }
+    } else {
+        return message.ERROR_INTERNAL_SERVER_DBA
+    }
+}
+
+// get: função para buscar um curso filtrando pelo nome
+const getDisciplinaByCurso = async (id) => {
+    let cursoDiscJSON = {}
+    let idCurso = id
+    let dadosCursoDisc
+    
+    if (idCurso == '' || idCurso == undefined) {
+        return message.ERROR_INVALID_PARAM //400
+    } else {
+
+        const dadosCurso = await cursoDAO.selectByIdCurso(idCurso)
+        const disciplinasCurso = await cursoDAO.selectDiscByCurso(idCurso)
+
+        console.log(dadosCurso)        
+        console.log(disciplinasCurso)        
+        if (dadosCursoDisc && disciplinasCurso) {
+            if (dadosCursoDisc.length > 0 && disciplinasCurso.length > 0) {
+                dadosCurso[0].cursos = disciplinasCurso
+                cursoDiscJSON = dadosCurso[0]
+                
+                // cursoDiscJSON.cursoDisc = dadosCursoDisc
+                // cursoDiscJSON.qt = dadosCursoDisc.length
+                // cursoDiscJSON.status_code = 200
+
+                return cursoDiscJSON
+            } else {
+                return message.ERROR_NOT_FOUND //404
+            }
+        } else {
+            return message.ERROR_INTERNAL_SERVER_DBA // 500
+        }
+    }
+}
 
 module.exports = {
     setNovoCurso,
     getListarCursos,
     getBuscarCurso,
-    getCursoByNome
+    getCursoByNome,
+    getListarCursosDisciplinas,
+    getDisciplinaByCurso
 }

@@ -42,6 +42,13 @@ const corsOptions = {
 // cria um objeto do tipo JSON para receber os dados via body nas requisições POST ou PUT
 const bodyParserJSON = bodyParser.json()
 
+//#region IMPORT GOOGLE IA
+const {
+    GoogleGenerativeAI,
+    HarmCategory,
+    HarmBlockThreshold,
+  } = require("@google/generative-ai");
+
 // #region IMPORTS
 /****************************** IMPORT DE CONTROLLERS ****************************/
 const controllerAluno = require('./controller/controller_alunos.js')
@@ -383,9 +390,9 @@ app.get('/v1/jengt_provest/icones', cors(), async(request, response, next) => {
 // #region CURSOS
 /****************************** CURSOS ****************************/
 
-// endpoint: validacao de usuario
+// endpoint: inserir curso
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/cuso/', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/curso/', cors(), bodyParserJSON, async(request, response, next) => {
 
     // recebe o content type da requisição (A API deve receber somente application/json)
     let contentType = request.headers['content-type']
@@ -430,6 +437,37 @@ app.get('/v1/jengt_provest/curso/:id', cors(), async(request, response, next) =>
 
     response.status(dadosCurso.status_code)
     response.json(dadosCurso)
+})
+
+// endpoints: listar todos as disciplinas para seus cursos
+app.get('/v1/jengt_provest/cursos/disciplinas', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosCursos = await controllerCurso.getListarCursosDisciplinas()
+
+    response.status(dadosCursos.status_code)
+    response.json(dadosCursos)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID do curso
+app.get('/v1/jengt_provest/curso/disciplinas/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idCurso = request.params.id
+
+    let dadosCurso = await controllerCurso.getDisciplinaByCurso(idCurso)
+
+    response.status(dadosCurso.status_code)
+    response.json(dadosCurso)
+})
+
+// endpoints: listar professores pela disciplina
+app.get('/v1/jengt_provest/profs/disciplina/:idDisciplina', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idDisciplina = request.params.idDisciplina
+
+    let dadosProf = await controllerProf.getProfByDisc(idDisciplina)
+
+    response.status(dadosProf.status_code)
+    response.json(dadosProf)
 })
 /*************************************************************************/
 
@@ -578,13 +616,6 @@ app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async(request, 
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
-
-const {
-    GoogleGenerativeAI,
-    HarmCategory,
-    HarmBlockThreshold,
-  } = require("@google/generative-ai");
-
 
 //#region correção
 app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async(request, response, next) => {
