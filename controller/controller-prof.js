@@ -406,16 +406,17 @@ const getProfByDisc = async (id) => {
         if (dadosProf) {
             // validação para verificar se existem dados de retorno
             if (dadosProf.length > 0) {
-                // const promise = dadosProf.map(async (disciplinas) => {
-                //     const disciplinas = await professorDAO.selectDisciplinasByProfId(disciplinas.id)
-                //     if (professores) {
-                //         let profArray = []
-                //         professores.forEach((profs) => {
-                //             profArray.push(profs.nome)
-                //         });
-                //         disciplinas.professores = profArray
-                //     }
-                // })
+                const promise = dadosProf.map(async (disc) => {
+                    const professores = await professorDAO.selectProfByDisciplina(disc.id)
+                    if (professores) {
+                        let profArray = []
+                        professores.forEach((disc) => {
+                            profArray.push(disc.nome)
+                        });
+                        disc.professores = profArray
+                    }
+    
+                })
     
                 await Promise.all(promise)
                 professoresJSON.professores = dadosProf
@@ -440,6 +441,7 @@ module.exports = {
     getListarProfessores,
     getBuscarProfessor,
     getProfessorByNome,
+    getValidarProf,
     setAtualizarProfSenha,
     getProfByDisc
 }
