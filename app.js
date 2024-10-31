@@ -63,6 +63,8 @@ const controllerTemas = require('./controller/controller-temas.js')
 const controllerRedacoes = require('./controller/controller-redacoes.js')
 const controllerCaderno = require('./controller/controller-caderno.js')
 const controllerInstituicoes = require('./controller/controller-instituicoes.js')
+const controllerVideoaulas = require('./controller/controller-videoaulas.js')
+const controllerFases = require('./controller/controller-fases.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -767,6 +769,80 @@ app.get('/v1/jengt_provest/instituicoes/filtro/:sigla', cors(), async(request, r
   response.status(dadosInst.status_code)
   response.json(dadosInst)
 })
+/*************************************************************************/
+
+// #region VIDEOAULAS
+/****************************** VIDEOAULAS ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/videoaulas', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosVideoaula = await controllerVideoaulas.getListarVideoaulas()
+
+    response.status(dadosVideoaula.status_code)
+    response.json(dadosVideoaula)
+})
+
+// endpoint: filtrar pelo topico
+app.get('/v1/jengt_provest/videoaulas/:idTopico', cors(), async(request, response, next) => {
+    let idTopico = request.params.idTopico
+
+    // chama a função para retornar os dados do admin
+    let dadosVideoaula = await controllerVideoaulas.getVideoaulaByTopico(idTopico)
+
+    response.status(dadosVideoaula.status_code)
+    response.json(dadosVideoaula)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/videoaula/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idVideoaula = request.params.id
+
+    let dadosVideoaula = await controllerVideoaulas.getBuscarVideoaula(idVideoaula)
+    
+    response.status(dadosVideoaula.status_code)
+    response.json(dadosVideoaula)
+})
+
+// endpoint: inserir novas videoaulas no Banco de Dados
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/videoaula', cors(), bodyParserJSON, async(request, response, next) => {
+
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerVideoaulas.setNovaVideoaula(dadosBody, contentType)
+
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+})
+/*************************************************************************/
+
+// #region FASES
+/****************************** FASES ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosFase = await controllerFases.getListarInstituicoes()
+  
+    response.status(dadosFase.status_code)
+    response.json(dadosFase)
+  })
+  
+  // endpoint: retorna os dados, filtrando pelo ID
+  app.get('/v1/jengt_provest/fase/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idInst = request.params.id
+  
+    let dadosInst = await controllerInstituicoes.getBuscarInstituicao(idInst)
+  
+    response.status(dadosInst.status_code)
+    response.json(dadosInst)
+  })
 /*************************************************************************/
 
 app.listen(8080, function() {
