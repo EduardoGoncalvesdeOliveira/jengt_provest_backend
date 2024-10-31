@@ -59,21 +59,21 @@ const getBuscarInstituicao = async (id) => {
 
 // get: função para buscar instituicao filtrando pela sigla
 const getInstituicaoBySigla = async (sigla) => {
-    let cursoJSON = {}
-    let filtro = nome
+    let instituicoesJSON = {}
+    let filtro = sigla
 
     if (filtro == '' || filtro == undefined) {
         return message.ERROR_INVALID_PARAM //400
     } else {
 
-        let dadosCursorso = await cursoDAO.selectByNome(filtro)
-        if (dadosCursorso) {
-            if (dadosCursorso.length > 0) {
-                cursoJSON.curso = dadosCursorso
-                cursoJSON.qt = dadosCursorso.length
-                cursoJSON.status_code = 200
+        let dadosInst = await instituicaoDAO.selectBySiglaInstituicao(filtro)
+        if (dadosInst) {
+            if (dadosInst.length > 0) {
+                instituicoesJSON.curso = dadosInst
+                instituicoesJSON.qt = dadosInst.length
+                instituicoesJSON.status_code = 200
 
-                return cursoJSON
+                return instituicoesJSON
             } else {
                 return message.ERROR_NOT_FOUND //404
             }
@@ -85,7 +85,7 @@ const getInstituicaoBySigla = async (sigla) => {
 
 
 module.exports = {
-    getListarExercicios,
-    getBuscarExercicio,
-    getExerciciosByTopico
+    getListarInstituicoes,
+    getBuscarInstituicao,
+    getInstituicaoBySigla
 }

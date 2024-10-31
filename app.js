@@ -51,6 +51,7 @@ const {
 
 // #region IMPORTS
 /****************************** IMPORT DE CONTROLLERS ****************************/
+const message = require('./modulo/config.js')
 const controllerAluno = require('./controller/controller_alunos.js')
 const controllerProf = require('./controller/controller-prof.js')
 const controllerExercicio = require('./controller/controller-exercicios.js')
@@ -61,7 +62,7 @@ const controllerNot = require('./controller/controller-notif.js')
 const controllerTemas = require('./controller/controller-temas.js')
 const controllerRedacoes = require('./controller/controller-redacoes.js')
 const controllerCaderno = require('./controller/controller-caderno.js')
-const message = require('./modulo/config.js')
+const controllerInstituicoes = require('./controller/controller-instituicoes.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -731,6 +732,40 @@ app.put('/v1/jengt_provest/caderno/:id', cors(), bodyParserJSON, async(request, 
 
     response.status(resultDados.status_code)
     response.json(resultDados)
+})
+/*************************************************************************/
+
+// #region INSTITUIÇÕES
+/****************************** INSTITUIÇÕES ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/instituicoes', cors(), async(request, response, next) => {
+  // chama a função para retornar os dados
+  let dadosInst = await controllerInstituicoes.getListarInstituicoes()
+
+  response.status(dadosInst.status_code)
+  response.json(dadosInst)
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/instituicao/:id', cors(), async(request, response, next) => {
+  // recebe o id da requisição do admin
+  let idInst = request.params.id
+
+  let dadosInst = await controllerInstituicoes.getBuscarInstituicao(idInst)
+
+  response.status(dadosInst.status_code)
+  response.json(dadosInst)
+})
+
+// endpoint: retorna os dados, filtrando pela sigla
+app.get('/v1/jengt_provest/instituicoes/filtro/:sigla', cors(), async(request, response, next) => {
+  // recebe o id da requisição do admin
+  let filtro = request.params.sigla
+
+  let dadosInst = await controllerInstituicoes.getInstituicaoBySigla(filtro)
+
+  response.status(dadosInst.status_code)
+  response.json(dadosInst)
 })
 /*************************************************************************/
 
