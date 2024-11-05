@@ -12,40 +12,12 @@ const { PrismaClient } = require('@prisma/client')
 // instanciando o objeto prisma com as caracteristicas do prisma client
 const prisma = new PrismaClient()
 
-//  post: inserir
-const insertVestFase = async(dadosVestFase) => {
-    try {
-        let sql
-
-        sql = `insert into tbl_redacao (titulo, texto, tema_id, status)values(
-                '${dadosRedacao.titulo}',
-                '${dadosRedacao.texto}',
-                ${dadosRedacao.tema_id},
-               true
-            )`
-            
-            // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
-            // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
-            let result = await prisma.$executeRawUnsafe(sql)
-//console.log(result);
-        // validação para verificar se o insert funcionou no DB
-        if(result){
-            return true
-        } else {
-            return false
-        }
-
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}
 
 // get: listar todos os vest fases
 const selectAllVestFases = async () => {
 
     try {
-        let sql = `select tbl_vestibulares.nome, tbl_vestibulares.data_prova, tbl_instituicoes.nome, tbl_instituicoes.sigla, tbl_fases.fase
+        let sql = `select tbl_vestibulares.nome, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_provas, tbl_instituicoes.nome as instituicao, tbl_instituicoes.sigla, tbl_fases.fase
                     from tbl_vest_fases
                     left join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
                     left join tbl_instituicoes on tbl_vestibulares.instituicao_id=tbl_instituicoes.id
@@ -56,9 +28,9 @@ const selectAllVestFases = async () => {
         // $queryRaw(‘codigo digitado aqui’)
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        let rsVestFases = await prisma.$queryRawUnsafe(sql)
 
-        return rsRedacao
+        return rsVestFases
 
     } catch (error) {
         return false
@@ -70,15 +42,17 @@ const selectByIdVestFase = async (id) => {
 
     try {
 
-        // realiza a busca do aluno pelo id
-        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
-                    from tbl_redacao 
-                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id  
-                    where tbl_redacao.id=${id}`
+        // realiza a busca do vest e fase pelo id
+        let sql = `select tbl_vestibulares.nome, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_prova, tbl_instituicoes.nome, tbl_instituicoes.sigla, tbl_fases.fase
+                    from tbl_vest_fases
+                    left join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
+                    left join tbl_instituicoes on tbl_vestibulares.instituicao_id=tbl_instituicoes.id
+                    left join tbl_fases on tbl_vest_fases.fase_id=tbl_fases.id 
+                    where tbl_vest_fases.id=${id}`
 
         // executa no DBA o script SQL
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
-        return rsRedacao
+        let rsVestFases = await prisma.$queryRawUnsafe(sql)
+        return rsVestFases
 
     } catch (error) {
         console.log(error);
@@ -87,18 +61,20 @@ const selectByIdVestFase = async (id) => {
 }
 
 // get: buscar o vest e fase existente filtrando pela instituicao desejada
-const selectByInstituicao = async (titulo) => {
+const selectByInstituicao = async (instituicao) => {
     
     try {
-        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
-                    from tbl_redacao 
-                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id
-                    where tbl_redacao.titulo like '%${titulo}%'`
+        let sql = ` select tbl_vestibulares.nome, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_prova, tbl_instituicoes.nome as instituicao, tbl_instituicoes.sigla, tbl_fases.fase
+                    from tbl_vest_fases
+                    left join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
+                    left join tbl_instituicoes on tbl_vestibulares.instituicao_id=tbl_instituicoes.id
+                    left join tbl_fases on tbl_vest_fases.fase_id=tbl_fases.id 
+                    where tbl_instituicoes.nome like '%${instituicao}%'`
 
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        let rsVestFases = await prisma.$queryRawUnsafe(sql)
 
-        return rsRedacao
+        return rsVestFases
         
     } catch (error) {
         return false
@@ -106,13 +82,15 @@ const selectByInstituicao = async (titulo) => {
 }
 
 // get: buscar o vest e fase existente filtrando pela data di vestibular
-const selectByDataVest = async (titulo) => {
+const selectByDataVest = async (data) => {
     
     try {
-        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
-                    from tbl_redacao 
-                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id
-                    where tbl_redacao.titulo like '%${titulo}%'`
+        let sql = `select tbl_vestibulares.nome, date_format(tbl_vestibulares.data_prova, "%Y-%m-%d") as data_prova, tbl_instituicoes.nome as instituicao, tbl_instituicoes.sigla, tbl_fases.fase
+                    from tbl_vest_fases
+                    left join tbl_vestibulares on tbl_vest_fases.vestibular_id=tbl_vestibulares.id
+                    left join tbl_instituicoes on tbl_vestibulares.instituicao_id=tbl_instituicoes.id
+                    left join tbl_fases on tbl_vest_fases.fase_id=tbl_fases.id 
+                    where tbl_vestibulares.data_prova like '%${data}%'`
 
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
         let rsRedacao = await prisma.$queryRawUnsafe(sql)
@@ -128,11 +106,11 @@ const selectByDataVest = async (titulo) => {
 const selectLastId = async () => {
     try {
 
-        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_redacao limit 1' 
+        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_vest_fases limit 1' 
 
-        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        let rsVestFases = await prisma.$queryRawUnsafe(sql)
 
-        return rsRedacao
+        return rsVestFases
 
     } catch (error) {
         return false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
@@ -141,10 +119,9 @@ const selectLastId = async () => {
 
 
 module.exports={
-    insertRedacoes,
-    updateRedacao,
-    selectAllRedacoes,
-    selectByIdRedacao,
-    selectByTitulo,
+    selectAllVestFases,
+    selectByIdVestFase,
+    selectByInstituicao,
+    selectByDataVest,
     selectLastId
 }
