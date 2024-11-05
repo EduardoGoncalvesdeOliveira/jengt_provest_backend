@@ -41,16 +41,16 @@ const getBuscarFase = async (id) => {
 }
 
 // get: listar todos as fases
-const getListarIcones = async() => {
+const getListarFases = async() => {
     let fasesJSON = {}
     let dadosFase = await fasesDAO.selectAllFases()
 
     if (dadosFase) {
         if (dadosFase.length > 0) {
-            iconeJSON.icones = dadosFase
-            iconeJSON.qt = dadosFase.length
-            iconeJSON.status_code = 200
-            return iconeJSON
+            fasesJSON.fases = dadosFase
+            fasesJSON.qt = dadosFase.length
+            fasesJSON.status_code = 200
+            return fasesJSON
         } else {
             return message.ERROR_NOT_FOUND
         }
@@ -60,6 +60,6 @@ const getListarIcones = async() => {
 }
 
 module.exports={
-    getBuscarIcone,
-    getListarIcones
+    getBuscarFase,
+    getListarFases
 }
