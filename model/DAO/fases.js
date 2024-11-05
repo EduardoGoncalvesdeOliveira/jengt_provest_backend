@@ -16,13 +16,14 @@ const prisma = new PrismaClient()
 const selectByIdFase = async (id) => {
     try {
         // realiza a busca da fase pelo id
-        let sql = `select * from tbl_fases where id=${id} and status=true`
+        let sql = `select * from tbl_fases where id=${id}`
 
         // executa no DBA o script SQL
         let rsFases = await prisma.$queryRawUnsafe(sql)
         return rsFases
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }

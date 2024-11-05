@@ -827,7 +827,7 @@ app.post('/v1/jengt_provest/videoaula', cors(), bodyParserJSON, async(request, r
 // endpoints: listar tudo
 app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
     // chama a função para retornar os dados
-    let dadosFase = await controllerFases.getListarInstituicoes()
+    let dadosFase = await controllerFases.getListarFases()
   
     response.status(dadosFase.status_code)
     response.json(dadosFase)
@@ -836,12 +836,33 @@ app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
   // endpoint: retorna os dados, filtrando pelo ID
   app.get('/v1/jengt_provest/fase/:id', cors(), async(request, response, next) => {
     // recebe o id da requisição do admin
-    let idInst = request.params.id
+    let idFase = request.params.id
   
-    let dadosInst = await controllerInstituicoes.getBuscarInstituicao(idInst)
+    let dadosFase = await controllerFases.getBuscarFase(idFase)  
+    response.status(dadosFase.status_code)
+    response.json(dadosFase)
+  })
+/*************************************************************************/
+
+// #region VESTIBULAR
+/****************************** VESTIBULAR - VEST-FASES ****************************/
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosFase = await controllerFases.getListarFases()
   
-    response.status(dadosInst.status_code)
-    response.json(dadosInst)
+    response.status(dadosFase.status_code)
+    response.json(dadosFase)
+  })
+  
+  // endpoint: retorna os dados, filtrando pelo ID
+  app.get('/v1/jengt_provest/fase/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idFase = request.params.id
+  
+    let dadosFase = await controllerFases.getBuscarFase(idFase)  
+    response.status(dadosFase.status_code)
+    response.json(dadosFase)
   })
 /*************************************************************************/
 
