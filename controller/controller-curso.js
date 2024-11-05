@@ -141,12 +141,20 @@ const setNovoCurso = async (dadosCurso, contentType) => {
 // get: função para listar todos os cursos e disciplinas existentes no DBA
 const getListarCursosDisciplinas = async () => {
     let cursoDiscJSON = {}
-    let dadosCursoDisc = await cursoDAO.selectAllCursosDisciplina()
-
+    let dadosCursoDisc = await cursoDAO.selectAllCursos()
+    
     if (dadosCursoDisc) {
         if (dadosCursoDisc.length > 0) {
-            cursoDiscJSON.curso_disciplina = dadosCursoDisc
-            cursoDiscJSON.qt = dadosCursoDisc.length
+
+            let cuzinho = []
+            const promise = dadosCursoDisc.map(async (curso) => {
+                cuzinho.push(await getDisciplinaByCurso(curso.id))      
+            })
+
+            await Promise.all(promise)
+            
+            cursoDiscJSON.curso_disciplina = cuzinho
+            cursoDiscJSON.qt = cuzinho.length
             cursoDiscJSON.status_code = 200
             return cursoDiscJSON
         } else {
@@ -159,27 +167,36 @@ const getListarCursosDisciplinas = async () => {
 
 // get: função para buscar um curso filtrando pelo nome
 const getDisciplinaByCurso = async (id) => {
-    let cursoDiscJSON = {}
+
     let idCurso = id
-    let dadosCursoDisc
+    let cursoDiscJSON = {}
+    const dadosCurso = await cursoDAO.selectByIdCurso(idCurso)    
     
-    if (idCurso == '' || idCurso == undefined) {
+    if (idCurso == '' || idCurso == undefined || dadosCurso.length <= 0) {
         return message.ERROR_INVALID_PARAM //400
     } else {
 
-        const dadosCurso = await cursoDAO.selectByIdCurso(idCurso)
-        const disciplinasCurso = await cursoDAO.selectDiscByCurso(idCurso)
-
-        console.log(dadosCurso)        
-        console.log(disciplinasCurso)        
-        if (dadosCursoDisc && disciplinasCurso) {
-            if (dadosCursoDisc.length > 0 && disciplinasCurso.length > 0) {
-                dadosCurso[0].cursos = disciplinasCurso
-                cursoDiscJSON = dadosCurso[0]
+        const disciplinasCurso = await cursoDAO.selectDiscByCurso(idCurso)    
+        
+        if (disciplinasCurso) {
+            
+            if (disciplinasCurso.length > 0) {
                 
-                // cursoDiscJSON.cursoDisc = dadosCursoDisc
-                // cursoDiscJSON.qt = dadosCursoDisc.length
-                // cursoDiscJSON.status_code = 200
+                // usando o mapi...
+                // o map retorna um array, nesse caso, o array está indo para o disciplinas
+                // o disciplinasCurso é o array que estamos percorrendo
+                // cada item do array, estamos chamando de disciplinas
+                // como ele retorna um array, precisamos retornar algum valor pra preencher esse array
+                // ali a gente está retornando o atributo disciplina do objeto disciplina (item que está dentro do array)
+                let disciplinas = disciplinasCurso.map((disciplina) => {
+                    return disciplina.disciplina
+                })        
+                
+                cursoDiscJSON.id = idCurso
+                cursoDiscJSON.curso = disciplinasCurso[0].curso
+                cursoDiscJSON.disciplinas = disciplinas
+                cursoDiscJSON.qt = disciplinasCurso.length
+                cursoDiscJSON.status_code = 200
 
                 return cursoDiscJSON
             } else {

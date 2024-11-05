@@ -226,11 +226,25 @@ const selectProfByDisciplina = async(disciplina) => {
     try {
         id = disciplina
 
-        let sql = `select tbl_disciplina.nome as disciplinas, tbl_professor.nome as professor
-                    from tbl_prof_disciplinas
-                    inner join tbl_professor on tbl_prof_disciplinas.professor_id=tbl_professor.id
+        let sql = `select tp.id, tp.nome, tp.email from tbl_professor as tp
+                    inner join tbl_prof_disciplinas on tbl_prof_disciplinas.professor_id=tp.id
                     inner join tbl_disciplina on tbl_prof_disciplinas.disciplina_id=tbl_disciplina.id
                     where tbl_disciplina.id=${id}`
+
+        // executa o scriptSQL no BD e recebe o retorno dos dados na variável
+        let rsDiscProf = await prisma.$queryRawUnsafe(sql)
+        return rsDiscProf
+    } catch (error) {
+        return false
+    }
+}
+
+const selectDisciplina = async(disciplina) => {
+    try {
+        id = disciplina
+
+        let sql = `select id, nome as disciplinas
+                    from tbl_disciplina where id=${id}`
 
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável
         let rsDiscProf = await prisma.$queryRawUnsafe(sql)
@@ -253,5 +267,6 @@ module.exports={
     updateProfSenha,
     selectValidacaoProf,
     selectDisciplinasByProfId,
+    selectDisciplina,
     selectProfByDisciplina
 }

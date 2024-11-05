@@ -42,7 +42,7 @@ const corsOptions = {
 // cria um objeto do tipo JSON para receber os dados via body nas requisições POST ou PUT
 const bodyParserJSON = bodyParser.json()
 
-//#region IMPORT GOOGLE IA
+//#region IMPORT IA
 const {
     GoogleGenerativeAI,
     HarmCategory,
@@ -65,6 +65,7 @@ const controllerCaderno = require('./controller/controller-caderno.js')
 const controllerInstituicoes = require('./controller/controller-instituicoes.js')
 const controllerVideoaulas = require('./controller/controller-videoaulas.js')
 const controllerFases = require('./controller/controller-fases.js')
+const controllerVestFases = require('./controller/controller-vestFases.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -847,23 +848,36 @@ app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
 // #region VESTIBULAR
 /****************************** VESTIBULAR - VEST-FASES ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/vest_fases', cors(), async(request, response, next) => {
     // chama a função para retornar os dados
-    let dadosFase = await controllerFases.getListarFases()
+    let dadosVestFase = await controllerVestFases.getListarVestFases()
   
-    response.status(dadosFase.status_code)
-    response.json(dadosFase)
+    response.status(dadosVestFase.status_code)
+    response.json(dadosVestFase)
   })
   
-  // endpoint: retorna os dados, filtrando pelo ID
-  app.get('/v1/jengt_provest/fase/:id', cors(), async(request, response, next) => {
-    // recebe o id da requisição do admin
-    let idFase = request.params.id
-  
-    let dadosFase = await controllerFases.getBuscarFase(idFase)  
-    response.status(dadosFase.status_code)
-    response.json(dadosFase)
-  })
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/vest_fases/:id', cors(), async(request, response, next) => {
+// recebe o id da requisição do admin
+let idVestFase = request.params.id
+
+let dadosVestFase = await controllerVestFases.getBuscarVestFases(idVestFase)  
+response.status(dadosVestFase.status_code)
+response.json(dadosVestFase)
+})
+
+// endpoint: filtrar pelo nome
+app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async(request, response, next) => {
+    
+    let filtroInst = request.query.instituicao
+    let filtroData = request.query.data
+
+    // chama a função para retornar os dados do admin
+    let dadosVestFase = await controllerVestFases.getVestFaseByInstituicao(filtroInst, filtroData)
+
+    response.status(dadosVestFase.status_code)
+    response.json(dadosVestFase)
+})
 /*************************************************************************/
 
 app.listen(8080, function() {

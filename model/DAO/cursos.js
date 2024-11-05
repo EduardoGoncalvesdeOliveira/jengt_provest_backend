@@ -89,7 +89,7 @@ const selectByIdCurso = async (id) => {
         let sql = `select id, nome from tbl_cursos where id=${id}`
 
         // executa no DBA o script SQL
-        let rsCurso = await prisma.$queryRawUnsafe(sql)
+        let rsCurso = await prisma.$queryRawUnsafe(sql)        
         return rsCurso
 
     } catch (error) {

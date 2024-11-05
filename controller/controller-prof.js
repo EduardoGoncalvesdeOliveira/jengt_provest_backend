@@ -401,25 +401,16 @@ const getProfByDisc = async (id) => {
     if (idDisciplina == '' || idDisciplina == undefined || isNaN(idDisciplina)) {
         return message.ERROR_INVALID_ID //400
     } else {
-        let dadosProf = await professorDAO.selectProfByDisciplina(idDisciplina)
 
-        if (dadosProf) {
+        let disciplina = await professorDAO.selectDisciplina(idDisciplina)
+        let dadosProf = await professorDAO.selectProfByDisciplina(idDisciplina)        
+
+        if (dadosProf && disciplina) {
             // validação para verificar se existem dados de retorno
-            if (dadosProf.length > 0) {
-                const promise = dadosProf.map(async (disc) => {
-                    const professores = await professorDAO.selectProfByDisciplina(disc.id)
-                    if (professores) {
-                        let profArray = []
-                        professores.forEach((disc) => {
-                            profArray.push(disc.nome)
-                        });
-                        disc.professores = profArray
-                    }
-    
-                })
-    
-                await Promise.all(promise)
-                professoresJSON.professores = dadosProf
+            if (dadosProf.length > 0 && disciplina.length > 0) {
+
+                disciplina[0].professores = dadosProf
+                professoresJSON.disciplina = disciplina[0]
                 professoresJSON.status_code = 200
                 return professoresJSON
             } else {
