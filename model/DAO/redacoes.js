@@ -17,10 +17,11 @@ const insertRedacoes = async(dadosRedacao) => {
     try {
         let sql
 
-        sql = `insert into tbl_redacao (titulo, texto, tema_id, status)values(
+        sql = `insert into tbl_redacao (titulo, texto, tema_id, aluno_id, status)values(
                 '${dadosRedacao.titulo}',
                 '${dadosRedacao.texto}',
                 ${dadosRedacao.tema_id},
+                ${dadosRedacao.aluno_id},
                true
             )`
             
@@ -144,6 +145,25 @@ const selectLastId = async () => {
 }
 
 // get: filtrar as redações do aluno
+const selectByAlunoIdRedacao = async (id) => {
+
+    try {
+
+        // realiza a busca do aluno pelo id
+        let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
+                    from tbl_redacao 
+                    inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id  
+                    where tbl_redacao.id=${id}`
+
+        // executa no DBA o script SQL
+        let rsRedacao = await prisma.$queryRawUnsafe(sql)
+        return rsRedacao
+
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
 
 module.exports={
     insertRedacoes,
