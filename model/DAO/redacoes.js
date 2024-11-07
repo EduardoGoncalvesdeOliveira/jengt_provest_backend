@@ -27,8 +27,8 @@ const insertRedacoes = async(dadosRedacao) => {
             // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
             // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
             let result = await prisma.$executeRawUnsafe(sql)
-//console.log(result);
-        // validação para verificar se o insert funcionou no DB
+
+            // validação para verificar se o insert funcionou no DB
         if(result){
             return true
         } else {
@@ -143,6 +143,7 @@ const selectLastId = async () => {
     }
 }
 
+// get: filtrar as redações do aluno
 
 module.exports={
     insertRedacoes,

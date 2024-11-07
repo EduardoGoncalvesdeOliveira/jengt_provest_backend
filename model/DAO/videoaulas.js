@@ -16,7 +16,7 @@ const prisma = new PrismaClient()
 const selectAllVideoaulas = async () => {
 
     try {
-        let sql = `select tbl_videoaulas.titulo, tbl_videoaulas.duracao, tbl_topicos.nome as topico
+        let sql = `select tbl_videoaulas.titulo, time_format(tbl_videoaulas.duracao, "%H:%i:%s") as duracao, tbl_videoaulas.link, tbl_topicos.nome as topico
                     from tbl_videoaulas
                     inner join tbl_topicos on tbl_videoaulas.topico_id=tbl_topicos.id
                     order by tbl_videoaulas.id desc`
@@ -38,7 +38,7 @@ const selectAllVideoaulas = async () => {
 const selectByIdVideoaula = async (id) => {
     try {
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_videoaulas.titulo, tbl_videoaulas.duracao, tbl_topicos.nome as topico
+        let sql = `select tbl_videoaulas.titulo, time_format(tbl_videoaulas.duracao, "%H:%i:%s") as duracao, tbl_videoaulas.link, tbl_topicos.nome as topico
                     from tbl_videoaulas
                     inner join tbl_topicos on tbl_videoaulas.topico_id=tbl_topicos.id
                     where tbl_videoaulas.id=${id}`
@@ -59,7 +59,7 @@ const selectVideoaulaByTopico = async (topico) => {
         id = topico
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_videoaulas.titulo, tbl_videoaulas.duracao
+        let sql = `select tbl_videoaulas.titulo, time_format(tbl_videoaulas.duracao, "%H:%i:%s") as duracao, tbl_videoaulas.link
                     from tbl_videoaulas
                     inner join tbl_topicos on tbl_videoaulas.topico_id=tbl_topicos.id
                     where tbl_videoaulas.topico_id=${id}`
@@ -79,10 +79,12 @@ const insertVideoaulas = async(dadosVideoaula) => {
     try {
         let sql
 
-        sql = `insert into tbl_videoaulas (titulo, duracao, topico_id)values(
+        sql = `insert into tbl_videoaulas (titulo, duracao, link, topico_id, status)values(
                 '${dadosVideoaula.titulo}',
                 '${dadosVideoaula.duracao}',
-                ${dadosVideoaula.topico_id}
+                '${dadosVideoaula.link}',
+                ${dadosVideoaula.topico_id},
+                true
             )`
             
             // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
@@ -102,9 +104,26 @@ const insertVideoaulas = async(dadosVideoaula) => {
     }
 }
 
+// get: pegar o ultimo id
+const selectLastId = async () => {
+    try {
+
+        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_videoaulas limit 1' 
+
+        let rsAluno = await prisma.$queryRawUnsafe(sql)
+
+        return rsAluno
+
+    } catch (error) {
+        return false                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+    }
+}
+
+
 module.exports={
     selectAllVideoaulas,
     selectByIdVideoaula,
     selectVideoaulaByTopico,
-    insertVideoaulas
+    insertVideoaulas,
+    selectLastId
 }

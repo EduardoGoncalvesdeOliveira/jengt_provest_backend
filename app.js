@@ -880,6 +880,6 @@ app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async(request, resp
 })
 /*************************************************************************/
 
-app.listen(8080, function() {
+app.listen(3000, function() {
     console.log('API Funcionando e aguardando requisições')
 })

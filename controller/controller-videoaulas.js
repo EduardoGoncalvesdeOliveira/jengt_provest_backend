@@ -9,28 +9,10 @@
 // import do arquivo DAO para manipular dados do BD
 const videoaulasDAO = require('../model/DAO/videoaulas.js')
 const controllerTopicos = require('../controller/controller-topicos.js')
+const topicosDAO = require('../model/DAO/topicos.js')
 
 // import do arquivo de configuração do projeto
 const message = require('../modulo/config.js')
-
-// listar todos as videoaulas existentes no DBA
-const getListarVideoaulas = async () => {
-    let videoaulasJSON = {}
-    let dadosVideoaula = await videoaulasDAO.selectAllVideoaulas()
-
-    if (dadosVideoaula) {
-        if (dadosVideoaula.length > 0) {
-            videoaulasJSON.videoaulas = dadosVideoaula
-            videoaulasJSON.qt = dadosVideoaula.length
-            videoaulasJSON.status_code = 200
-            return videoaulasJSON
-        } else {
-            return message.ERROR_NOT_FOUND
-        }
-    } else {
-        return message.ERROR_INTERNAL_SERVER_DBA
-    }
-}
 
 // get: função para buscar uma videoaula pelo ID
 const getBuscarVideoaula = async (id) => {
@@ -69,11 +51,17 @@ const getVideoaulaByTopico = async (idTopico) => {
     if (topico == '' || topico == undefined) {
         return message.ERROR_INVALID_PARAM //400
     } else {
-
+        
+        let dadosTopico = await topicosDAO.selectByIdTopico(topico)
         let dadosVideoaula = await videoaulasDAO.selectVideoaulaByTopico(idTopico)
-        if (dadosVideoaula) {
+
+        if(dadosVideoaula){
+            dadosTopico[0].videoaulas = dadosVideoaula
+        }
+
+        if (dadosTopico) {
             if (dadosVideoaula.length > 0) {
-                videoaulasJSON.videoaulas = dadosVideoaula
+                videoaulasJSON.videoaulas = dadosTopico
                 videoaulasJSON.qt = dadosVideoaula.length
                 videoaulasJSON.status_code = 200
                 return videoaulasJSON
@@ -86,6 +74,34 @@ const getVideoaulaByTopico = async (idTopico) => {
     }
 }
 
+// listar todos as videoaulas existentes no DBA
+const getListarVideoaulas = async () => {
+
+    let videoaulasJSON = {}
+    let topicos = await topicosDAO.selectAllTopicos()
+
+    const promise = topicos.map(async (topico) => {
+        const videoaulas = await videoaulasDAO.selectVideoaulaByTopico(topico.id)
+        topico.videoaulas = videoaulas
+    })
+
+    await Promise.all(promise)
+
+    if (topicos) {
+        if (topicos.length > 0) {
+            videoaulasJSON.videoaulas = topicos
+            videoaulasJSON.qt = topicos.length
+            videoaulasJSON.status_code = 200
+            return videoaulasJSON
+        } else {
+            return message.ERROR_NOT_FOUND
+        }
+    } else {
+        return message.ERROR_INTERNAL_SERVER_DBA
+    }
+}
+
+
 // post: função para inserir uma nova videoaula no DBA
 const setNovaVideoaula = async(dadosVideoaula, contentType) => {    
     try {
@@ -97,6 +113,7 @@ const setNovaVideoaula = async(dadosVideoaula, contentType) => {
              //Validação para verificar campos obrigatórios e conistência de dados
              if (dadosVideoaula.titulo == ''     || dadosVideoaula.titulo == undefined      || dadosVideoaula.titulo.length > 100  ||
                 dadosVideoaula.duracao == ''     || dadosVideoaula.duracao == undefined     || dadosVideoaula.duracao.length > 20  ||
+                dadosVideoaula.link == ''        || dadosVideoaula.link == undefined        || dadosVideoaula.link.length > 200    ||
                 dadosVideoaula.topico_id == ''   || dadosVideoaula.topico_id == undefined   || valTopicos.status == false
                 ){
                     return message.ERROR_REQUIRED_FIELDS // 400      
@@ -106,7 +123,8 @@ const setNovaVideoaula = async(dadosVideoaula, contentType) => {
 
                 //validação para verificar se os dados foram inseridos pelo DAO no BD
                 if (novoVideo) {
-                    let id = await videoaulasDAO.selectLastId()             
+                    let id = await videoaulasDAO.selectLastId()
+                    dadosVideoaula.id = Number(id[0].id)             
                     
                     // cria o padrão de JSON para retorno dos dados criados no DB
                     resultDadosVideoaula.status = message.SUCCESS_CREATED_ITEM.status
