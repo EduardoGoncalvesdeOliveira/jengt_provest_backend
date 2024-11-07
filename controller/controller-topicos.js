@@ -38,21 +38,22 @@ const getListarTopicos = async () => {
 
 // get: função para buscar um topico pelo ID
 const getBuscarTopicos = async (id) => {
+
     // recebe o id
     let idTopico = id;
     let topicosJSON = {}
-
+    
     // validação para ID vazio, indefinido ou não numérico
     if (idTopico == '' || idTopico == undefined || isNaN(idTopico)) {
         return message.ERROR_INVALID_ID //400
     } else {
-
-        const dadosExercicio = await controllerExercicio.getExerciciosByTopico(id)
+        
         let dadosTopicos = await topicosDAO.selectByIdTopico(idTopico)
+        
+        if (dadosTopicos) { 
 
-        if (dadosTopicos) {
-            
-            if(dadosExercicio.exercicios.length > 0){
+            const dadosExercicio = await controllerExercicio.getExerciciosByTopico(idTopico)
+            if(dadosExercicio.exercicios){
                 dadosTopicos[0].exercicios = dadosExercicio.exercicios
             }
 
