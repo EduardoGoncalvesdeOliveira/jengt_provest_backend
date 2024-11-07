@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/776f2e6b-b025-4687-9222-e63f799d3c3d/resourceGroups/back-provest/providers/Microsoft.Web/sites/provest",
+    "appService.deploySubpath": "."
+}
