@@ -153,7 +153,7 @@ const selectByAlunoIdRedacao = async (id) => {
         let sql = `select tbl_redacao.id, tbl_redacao.titulo, tbl_redacao.texto, tbl_tema.nome as tema, tbl_redacao.status 
                     from tbl_redacao 
                     inner join tbl_tema on tbl_redacao.tema_id=tbl_tema.id  
-                    where tbl_redacao.id=${id}`
+                    where tbl_redacao.aluno_id=${id}`
 
         // executa no DBA o script SQL
         let rsRedacao = await prisma.$queryRawUnsafe(sql)
@@ -171,5 +171,6 @@ module.exports={
     selectAllRedacoes,
     selectByIdRedacao,
     selectByTitulo,
-    selectLastId
+    selectLastId,
+    selectByAlunoIdRedacao
 }
