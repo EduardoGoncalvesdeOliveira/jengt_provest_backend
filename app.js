@@ -588,6 +588,17 @@ app.get('/v1/jengt_provest/redacao/:id', cors(), async(request, response, next) 
     response.json(dadosRedacao)
 })
 
+// endpoint: retorna os dados da redação, filtrando pelo ID do aluno
+app.get('/v1/jengt_provest/aluno/redacao/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idAluno = request.params.id
+
+    let dadosRedacao = await controllerRedacoes.getBuscarRedacaoByAlunoId(idAluno)
+
+    response.status(dadosRedacao.status_code)
+    response.json(dadosRedacao)
+})
+
 // endpoint: inserir novos alunos no Banco de Dados
     // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
 app.post('/v1/jengt_provest/redacao', cors(), bodyParserJSON, async(request, response, next) => {

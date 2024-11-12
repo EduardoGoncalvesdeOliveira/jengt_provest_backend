@@ -170,10 +170,37 @@ const getRedacaoByTitulo = async (nome) => {
     }
 }
 
+// get: função para buscar redações do aluno especificado pelo ID
+const getBuscarRedacaoByAlunoId = async (id) => {
+    // recebe o id
+    let idAluno = id;
+    let redacaoJSON = {}
+    
+    // validação para ID vazio, indefinido ou não numérico
+    if (idAluno == '' || idAluno == undefined || isNaN(idAluno)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+        let dadosRedacao = await redacaoDAO.selectByAlunoIdRedacao(idAluno)
+        if (dadosRedacao) {
+            // validação para verificar se existem dados de retorno
+            if (dadosRedacao.length > 0) {
+                redacaoJSON.redacao = dadosRedacao
+                redacaoJSON.status_code = 200
+                return redacaoJSON
+            } else {
+                return message.ERROR_NOT_FOUND //404
+            }
+        } else {
+            return message.ERROR_INTERNAL_SERVER_DBA ///500
+        }
+    }
+}
+
 module.exports = {
     setNovaRedacao,
     setAtualizarRedacao,
     getListarRedacoes,
     getBuscarRedacao,
-    getRedacaoByTitulo
+    getRedacaoByTitulo,
+    getBuscarRedacaoByAlunoId
 }
