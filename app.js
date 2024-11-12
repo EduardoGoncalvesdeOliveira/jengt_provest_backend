@@ -38,6 +38,9 @@ const corsOptions = {
     origin: '*'
 };
 
+
+//cors sem restrição de porta
+app.use(cors());
 // cria um objeto do tipo JSON para receber os dados via body nas requisições POST ou PUT
 const bodyParserJSON = bodyParser.json()
 
