@@ -12,7 +12,7 @@ const { PrismaClient } = require('@prisma/client')
 // instanciando o objeto prisma com as caracteristicas do prisma client
 const prisma = new PrismaClient()
 
-//  post: inserir prof
+// post: inserir prof
 const insertProfessor = async(dadosProf) => {
     try {
         let sql
@@ -222,6 +222,7 @@ const selectValidacaoProf = async (emailProf, senhaProf) => {
 
 }
 
+//#region prof-disc
 const selectProfByDisciplina = async(disciplina) => {
     try {
         id = disciplina
