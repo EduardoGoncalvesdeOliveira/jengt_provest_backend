@@ -255,6 +255,32 @@ const selectDisciplina = async(disciplina) => {
     }
 }
 
+const insertProfDisciplina = async (idDisc, idProf) => {
+    try {
+        let sql
+    
+        sql = `insert into tbl_prof_disciplinas(disciplina_id, professor_id)values(
+            ${idDisc},
+            ${idProf}
+            )`
+            
+        // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
+        // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
+        let result = await prisma.$executeRawUnsafe(sql)
+    
+        // validação para verificar se o insert funcionou no DB
+        if(result){
+            return true
+        } else {
+            return false
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 module.exports={
     insertProfessor,
     updateProfessor,
@@ -269,5 +295,6 @@ module.exports={
     selectValidacaoProf,
     selectDisciplinasByProfId,
     selectDisciplina,
-    selectProfByDisciplina
+    selectProfByDisciplina,
+    insertProfDisciplina
 }

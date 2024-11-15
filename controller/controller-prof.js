@@ -23,10 +23,10 @@ const setNovoProfessor = async (dadosProf, contentType) => {
             const icone = controllerIcone.getBuscarIcone(dadosProf.icone_id)
 
             //Validação para verificar campos obrigatórios e conistência de dados
-            if (dadosProf.nome == ''        || dadosProf.nome == undefined         || dadosProf.nome.length > 150      ||
-                dadosProf.email == ''       || dadosProf.email == undefined        || dadosProf.email.length > 256     ||
-                dadosProf.senha == ''       || dadosProf.senha == undefined        || dadosProf.senha.length > 32      ||
-                dadosProf.icone_id == ''    || dadosProf.icone_id == undefined     || icone.status == false
+            if (dadosProf.nome == '' || dadosProf.nome == undefined || dadosProf.nome.length > 150 ||
+                dadosProf.email == '' || dadosProf.email == undefined || dadosProf.email.length > 256 ||
+                dadosProf.senha == '' || dadosProf.senha == undefined || dadosProf.senha.length > 32 ||
+                dadosProf.icone_id == '' || dadosProf.icone_id == undefined || icone.status == false
             ) {
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
@@ -36,8 +36,26 @@ const setNovoProfessor = async (dadosProf, contentType) => {
                 //validação para verificar se os dados foram inseridos pelo DAO no BD
                 if (novoProf) {
                     let id = await professorDAO.selectLastId()
+                    let discArray = []
+
+                    if (dadosProf.disciplinas.length > 0) {
+                        const promise = dadosProf.disciplinas.map(async (disciplina) => {                            
+                            const respDisc = await professorDAO.selectDisciplina(disciplina)
+
+                            if (respDisc) {
+                                const profDisc = await professorDAO.insertProfDisciplina(disciplina, Number(id[0].id))
+
+                                if (profDisc) {
+                                    discArray.push(respDisc[0])
+                                }
+                            }
+                        })
+                        await Promise.all(promise)
+                    }
 
                     dadosProf.id = Number(id[0].id)
+                    dadosProf.disciplinas = discArray
+
 
                     // cria o padrão de JSON para retorno dos dados criados no DB
                     resultDadosProfs.status = message.SUCCESS_CREATED_ITEM.status
@@ -67,8 +85,8 @@ const setAtualizarProfessor = async (dadosProf, contentType, id) => {
             // cria a variável JSON
             let resultDadosProfs = {}
 
-            if (dadosProf.nome == ''     || dadosProf.nome == undefined     || dadosProf.nome.length > 150      ||
-                dadosProf.email == ''    || dadosProf.email == undefined    || dadosProf.email.length > 256     ||
+            if (dadosProf.nome == '' || dadosProf.nome == undefined || dadosProf.nome.length > 150 ||
+                dadosProf.email == '' || dadosProf.email == undefined || dadosProf.email.length > 256 ||
                 dadosProf.icone_id == '' || dadosProf.icone_id == undefined || dadosProf.icone_id.length > 255
             ) {
                 return message.ERROR_REQUIRED_FIELDS // 400
@@ -135,35 +153,35 @@ const setEditarExcluirProf = async (id) => {
 
 // put: função para atualizar um icone existente
 const setAtualizarIcone = async (icone, id) => {
-    try {        
-            // cria a variável JSON
-            let resultDadosProf = {}
+    try {
+        // cria a variável JSON
+        let resultDadosProf = {}
 
-            if (
-                icone == '' || icone == undefined || icone == false ||
-                id == ''    || id == undefined    || id == false
-            ){
-                return message.ERROR_REQUIRED_FIELDS // 400
+        if (
+            icone == '' || icone == undefined || icone == false ||
+            id == '' || id == undefined || id == false
+        ) {
+            return message.ERROR_REQUIRED_FIELDS // 400
+        } else {
+
+            console.log(icone, id);
+
+            //envia os dados para o DAO inserir no BD
+            let iconeAtt = await professorDAO.updateIcone(icone, id);
+
+            //validação para verificar se os dados foram inseridos pelo DAO no BD 
+            if (iconeAtt) {
+
+                // cria o padrão de JSON para retorno dos dados criados no DB
+                resultDadosProf.status = message.SUCCESS_UPDATED_ITEM.status
+                resultDadosProf.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                resultDadosProf.message = message.SUCCESS_UPDATED_ITEM.message
+
+                return resultDadosProf
             } else {
-                
-                console.log(icone, id);
-                
-                //envia os dados para o DAO inserir no BD
-                let iconeAtt = await professorDAO.updateIcone(icone, id);                
-
-                //validação para verificar se os dados foram inseridos pelo DAO no BD 
-                if (iconeAtt) {
-
-                    // cria o padrão de JSON para retorno dos dados criados no DB
-                    resultDadosProf.status = message.SUCCESS_UPDATED_ITEM.status
-                    resultDadosProf.status_code = message.SUCCESS_UPDATED_ITEM.status_code
-                    resultDadosProf.message = message.SUCCESS_UPDATED_ITEM.message
-
-                    return resultDadosProf
-                } else {
-                    return message.ERROR_INTERNAL_SERVER_DBA // 500
-                }
+                return message.ERROR_INTERNAL_SERVER_DBA // 500
             }
+        }
 
     } catch (error) {
         console.log(error);
@@ -253,9 +271,9 @@ const getBuscarProfessor = async (id) => {
                         });
                         prof.disciplinas = discArray
                     }
-    
+
                 })
-    
+
                 await Promise.all(promise)
                 professoresJSON.usuario = dadosProf
                 professoresJSON.status_code = 200
@@ -321,7 +339,7 @@ const setAtualizarProfSenha = async (dadosProf, contentType, idProf) => {
             // cria a variável JSON
             let resultDadosProfs = {}
 
-            if (dadosProf.senha == ''     || dadosProf.senha == undefined     || dadosProf.senha.length > 32) {
+            if (dadosProf.senha == '' || dadosProf.senha == undefined || dadosProf.senha.length > 32) {
                 return message.ERROR_REQUIRED_FIELDS // 400
             } else {
 
@@ -403,7 +421,7 @@ const getProfByDisc = async (id) => {
     } else {
 
         let disciplina = await professorDAO.selectDisciplina(idDisciplina)
-        let dadosProf = await professorDAO.selectProfByDisciplina(idDisciplina)        
+        let dadosProf = await professorDAO.selectProfByDisciplina(idDisciplina)
 
         if (dadosProf && disciplina) {
             // validação para verificar se existem dados de retorno
