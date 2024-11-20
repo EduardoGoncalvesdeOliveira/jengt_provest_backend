@@ -145,6 +145,32 @@ const getBuscarAnotacao = async (id) => {
     }
 }
 
+// get: função para buscar uma anotação pelo ID do aluno
+const getAnotacaoByIdAluno = async (id) => {
+    // recebe o id
+    let idAluno = id;
+    let cadernoJSON = {}
+    
+    // validação para ID vazio, indefinido ou não numérico
+    if (idAluno == '' || idAluno == undefined || isNaN(idAluno)) {
+        return message.ERROR_INVALID_ID //400
+    } else {
+        let dadosAnot = await cadernoDAO.selectByIdAluno(idAluno)
+        if (dadosAnot) {
+            // validação para verificar se existem dados de retorno
+            if (dadosAnot.length > 0) {
+                cadernoJSON.redacao = dadosAnot
+                cadernoJSON.status_code = 200
+                return cadernoJSON
+            } else {
+                return message.ERROR_NOT_FOUND //404
+            }
+        } else {
+            return message.ERROR_INTERNAL_SERVER_DBA ///500
+        }
+    }
+}
+
 // get: função para buscar um aluno filtrando pelo nome
 const getAnotByTitulo = async (nome) => {
     let cadernoJSON = {}
@@ -176,5 +202,6 @@ module.exports = {
     setAtualizarAnotacao,
     getListarAnotacoes,
     getBuscarAnotacao,
+    getAnotacaoByIdAluno,
     getAnotByTitulo
 }

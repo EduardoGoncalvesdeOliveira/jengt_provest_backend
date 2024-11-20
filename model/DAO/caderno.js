@@ -108,6 +108,27 @@ const selectByIdAnot = async (id) => {
     }
 }
 
+// get: buscar a anotacao existente filtrando pelo ID do aluno
+const selectByIdAluno = async (id) => {
+
+    try {
+
+        // realiza a busca do aluno pelo id
+        let sql = `select caderno_aluno.id, caderno_aluno.titulo, caderno_aluno.texto 
+                    from caderno_aluno
+                    inner join tbl_aluno on caderno_aluno.aluno_id=tbl_aluno.id  
+                    where caderno_aluno.aluno_id=${id}`
+
+        // executa no DBA o script SQL
+        let rsAnot = await prisma.$queryRawUnsafe(sql)
+        return rsAnot
+
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 // get: buscar a anotacao existente filtrando pelo nome
 const selectByTitulo = async (titulo) => {
     
@@ -149,5 +170,6 @@ module.exports={
     selectAllAnotacoes,
     selectByIdAnot,
     selectByTitulo,
-    selectLastId
+    selectLastId,
+    selectByIdAluno
 }

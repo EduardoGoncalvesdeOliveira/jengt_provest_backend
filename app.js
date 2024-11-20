@@ -705,6 +705,17 @@ app.get('/v1/jengt_provest/caderno/:id', cors(), async(request, response, next) 
   response.json(dadosAnot)
 })
 
+// endpoint: retorna os dados, filtrando pelo ID do aluno
+app.get('/v1/jengt_provest/caderno/aluno/:id', cors(), async(request, response, next) => {
+    // recebe o id da requisição do admin
+    let idAluno = request.params.id
+  
+    let dadosAnot = await controllerCaderno.getAnotacaoByIdAluno(idAluno)
+  
+    response.status(dadosAnot.status_code)
+    response.json(dadosAnot)
+  })
+
 // endpoint: retorna os dados, filtrando pelo titulo
 app.get('/v1/jengt_provest/caderno/filtro/:titulo', cors(), async(request, response, next) => {
   // recebe o id da requisição do admin
