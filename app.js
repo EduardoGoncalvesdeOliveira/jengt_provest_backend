@@ -23,7 +23,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch'); // Substituto do Axios
-const db = require('./db');
+const db = require('./model/DAO/db.js');
 
 // criando objeto app
 const app = express()
@@ -69,6 +69,7 @@ const controllerInstituicoes = require('./controller/controller-instituicoes.js'
 const controllerVideoaulas = require('./controller/controller-videoaulas.js')
 const controllerFases = require('./controller/controller-fases.js')
 const controllerVestFases = require('./controller/controller-vestFases.js')
+const controllerCalendario = require('./controller/controller-calendario.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -905,7 +906,7 @@ app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async (request, res
 })
 /*************************************************************************/
 
-// #region CRONOGRAMA
+// #region CRONOGRAMA ia
 /****************************** CRONOGRAMA ****************************/
 app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON, async (request, response, next) => {
 
@@ -924,7 +925,7 @@ app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON
 
     const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
-        systemInstruction: "monte um cronograma com as disciplinas necessárias para passar nos vestibulares, com duração, cronograma por semana e dicas APENAS",
+        systemInstruction: "seguindo o modelo, crie um cronograma de estudos para passar no vestibular, curso e instituições indicadas, conforme a disponibilidade dada",
     });
 
     const generationConfig = {
@@ -933,7 +934,7 @@ app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON
         topK: 40,
         maxOutputTokens: 8192,
         responseMimeType: "text/plain",
-    };
+      };
 
     const run = async () => {
         const chatSession = model.startChat({
@@ -956,48 +957,64 @@ app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON
 // #region CALENDÁRIO
 /****************************** CALENDÁRIO ****************************/
 // Obter lembretes da API Full Time Calendar e salvar no banco
-app.post('/v1/jengt_provest/api/salvar-lembretes', async (req, res) => {
-  try {
-    const { url, apiKey } = req.body;
+// endpoints: listar tudo
+app.get('/v1/jengt_provest/api/lembretes', cors(), async (request, response, next) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM tbl_lembretes');
+        response.status(200).json(rows);
+      } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: 'Erro ao acessar o banco de dados' });
+      }
+})
 
-    // Fetch na API externa
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-      },
-    });
+// endpoint: retorna os dados, filtrando pelo ID do aluno
+app.get('/v1/jengt_provest/api/lembretes/:id', cors(), async (request, response, next) => {
+    // recebe o id da requisição do admin
+    let idAluno = request.params.id
 
-    if (!response.ok) {
-      return res.status(response.status).json({ error: 'Erro ao acessar a API' });
-    }
+    try {
+        const [rows] = await db.query(`SELECT * FROM tbl_lembretes where aluno_id=${idAluno}`);
+        response.status(200).json(rows);
+      } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: 'Erro ao acessar o banco de dados' });
+      }
+})
 
-    const data = await response.json();
-
-    // Salvar lembretes no MySQL
-    const insertPromises = data.reminders.map((reminder) => {
-      const { title, description, date } = reminder;
-      return db.query('INSERT INTO reminders (title, description, date) VALUES (?, ?, ?)', [title, description, date]);
-    });
-
-    await Promise.all(insertPromises);
-
-    res.status(200).json({ message: 'Lembretes salvos com sucesso!' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro no servidor' });
-  }
-});
-
-// Rota para obter lembretes do banco
-app.get('/api/lembretes', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM reminders');
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao acessar o banco de dados' });
-  }
-});
+// endpoint: inserir novos lembretes no Banco de Dados
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/api/salvarLembretes', cors(), bodyParserJSON, async (request, response, next) => {
+    try {
+        const { url, apiKey } = req.body;
+    
+        // Fetch na API externa
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+          },
+        });
+    
+        if (!response.ok) {
+          return res.status(response.status).json({ error: 'Erro ao acessar a API' });
+        }
+    
+        const data = await response.json();
+    
+        // Salvar lembretes no MySQL
+        const insertPromises = data.reminders.map((reminder) => {
+          const { titulo, descricao, data, aluno_id, horario } = reminder;
+          return db.query('INSERT INTO tbl_lembretes (titulo, descricao, data, aluno_id, horario) VALUES (?, ?, ?, ?, ?)', [titulo, descricao, data, aluno_id, horario]);
+        });
+    
+        await Promise.all(insertPromises);
+    
+        res.status(200).json({ message: 'Lembretes salvos com sucesso!' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro no servidor' });
+      }
+})
 /*************************************************************************/
 
 var port = process.env.PORT || 3000
