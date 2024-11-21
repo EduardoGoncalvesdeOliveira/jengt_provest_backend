@@ -22,7 +22,8 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const axios = require('axios');
+const fetch = require('node-fetch'); // Substituto do Axios
+const db = require('./db');
 
 // criando objeto app
 const app = express()
@@ -950,6 +951,53 @@ app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON
 
     run()
 })
+/*************************************************************************/
+
+// #region CALENDÁRIO
+/****************************** CALENDÁRIO ****************************/
+// Obter lembretes da API Full Time Calendar e salvar no banco
+app.post('/v1/jengt_provest/api/salvar-lembretes', async (req, res) => {
+  try {
+    const { url, apiKey } = req.body;
+
+    // Fetch na API externa
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Erro ao acessar a API' });
+    }
+
+    const data = await response.json();
+
+    // Salvar lembretes no MySQL
+    const insertPromises = data.reminders.map((reminder) => {
+      const { title, description, date } = reminder;
+      return db.query('INSERT INTO reminders (title, description, date) VALUES (?, ?, ?)', [title, description, date]);
+    });
+
+    await Promise.all(insertPromises);
+
+    res.status(200).json({ message: 'Lembretes salvos com sucesso!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro no servidor' });
+  }
+});
+
+// Rota para obter lembretes do banco
+app.get('/api/lembretes', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM reminders');
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao acessar o banco de dados' });
+  }
+});
 /*************************************************************************/
 
 var port = process.env.PORT || 3000
