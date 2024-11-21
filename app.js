@@ -27,9 +27,9 @@ const axios = require('axios');
 // criando objeto app
 const app = express()
 
-app.use((request,response,next)=>{
-    response.header('Access-Control-Allow-Origin','*');
-    response.header('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, OPTIONS');
+app.use((request, response, next) => {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     app.use(cors());
     next();
 })
@@ -49,7 +49,7 @@ const {
     GoogleGenerativeAI,
     HarmCategory,
     HarmBlockThreshold,
-  } = require("@google/generative-ai");
+} = require("@google/generative-ai");
 
 // #region IMPORTS
 /****************************** IMPORT DE CONTROLLERS ****************************/
@@ -73,7 +73,7 @@ const controllerVestFases = require('./controller/controller-vestFases.js')
 // #region ALUNO
 /****************************** ALUNO ****************************/
 // endpoints: listar os alunos
-app.get('/v1/jengt_provest/alunos', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/alunos', cors(), async (request, response, next) => {
     // chama a função para retornar os dados do admin
     let dadosAlunos = await controllerAluno.getListarAlunos()
 
@@ -82,7 +82,7 @@ app.get('/v1/jengt_provest/alunos', cors(), async(request, response, next) => {
 })
 
 // endpoint: filtrar pelo nome
-app.get('/v1/jengt_provest/alunos/filtro', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/alunos/filtro', cors(), async (request, response, next) => {
     let filtro = request.query.nome
 
     // chama a função para retornar os dados do admin
@@ -93,7 +93,7 @@ app.get('/v1/jengt_provest/alunos/filtro', cors(), async(request, response, next
 })
 
 // endpoint: retorna os dados do aluno, filtrando pelo ID
-app.get('/v1/jengt_provest/aluno/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/aluno/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idAluno = request.params.id
 
@@ -104,25 +104,25 @@ app.get('/v1/jengt_provest/aluno/:id', cors(), async(request, response, next) =>
 })
 
 // endpoint: inserir novos alunos no Banco de Dados
-    // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/aluno', cors(), bodyParserJSON, async(request, response, next) => {
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/aluno', cors(), bodyParserJSON, async (request, response, next) => {
 
-        // recebe o content type da requisição (A API deve receber somente application/json)
-        let contentType = request.headers['content-type']
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
 
-        //recebe os dados encaminhados na requisição no body(JSON)
-        let dadosBody = request.body
-    
-        // encaminha os dados da requisição para a controller enviar para o BD
-        let resultDados = await controllerAluno.setNovoAluno(dadosBody, contentType)
-        
-        response.status(resultDados.status_code)
-        response.json(resultDados)
-    
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerAluno.setNovoAluno(dadosBody, contentType)
+
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+
 })
 
 // endpoint: editar icone
-app.put('/v1/jengt_provest/aluno/icone/', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/aluno/icone/', cors(), async (request, response, next) => {
     let aluno = request.query.aluno
     let icone = request.query.icone
     let dadosAluno = await controllerAluno.setAtualizarIcone(icone, aluno)
@@ -132,7 +132,7 @@ app.put('/v1/jengt_provest/aluno/icone/', cors(), async(request, response, next)
 })
 
 // endpoint: editar o status do aluno para false para "exclui-lo"
-app.put('/v1/jengt_provest/aluno/excluir/:id', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/aluno/excluir/:id', cors(), async (request, response, next) => {
     let aluno = request.params.id
     let dadosAluno = await controllerAluno.setEditarExcluirAluno(aluno)
 
@@ -141,7 +141,7 @@ app.put('/v1/jengt_provest/aluno/excluir/:id', cors(), async(request, response, 
 })
 
 // endpoint: editar o status do aluno para true para acha-lo
-app.put('/v1/jengt_provest/aluno/ativar/:id', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/aluno/ativar/:id', cors(), async (request, response, next) => {
     let aluno = request.params.id
     let dadosAluno = await controllerAluno.setEditarRenovarAluno(aluno)
 
@@ -150,7 +150,7 @@ app.put('/v1/jengt_provest/aluno/ativar/:id', cors(), async(request, response, n
 })
 
 // endpoint: editar os dados do aluno
-app.put('/v1/jengt_provest/aluno/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/aluno/:id', cors(), bodyParserJSON, async (request, response, next) => {
     let aluno = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -161,13 +161,13 @@ app.put('/v1/jengt_provest/aluno/:id', cors(), bodyParserJSON, async(request, re
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerAluno.setAtualizarAluno(dadosBody, contentType, aluno)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
 
 // endpoint: editar a senha do aluno
-app.put('/v1/jengt_provest/aluno/senha/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/aluno/senha/:id', cors(), bodyParserJSON, async (request, response, next) => {
     let aluno = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -178,14 +178,14 @@ app.put('/v1/jengt_provest/aluno/senha/:id', cors(), bodyParserJSON, async(reque
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerAluno.setAtualizarAlunoSenha(dadosBody, contentType, aluno)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
 
 // endpoint: validacao de usuario
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async (request, response, next) => {
 
     // recebe o content type da requisição (A API deve receber somente application/json)
     let contentType = request.headers['content-type']
@@ -195,10 +195,10 @@ app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async(request
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerAluno.getValidarAluno(dadosBody, contentType)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
-    
+
 })
 /*************************************************************************/
 
@@ -206,7 +206,7 @@ app.post('/v1/jengt_provest/aluno/entrar', cors(), bodyParserJSON, async(request
 /****************************** PROF ****************************/
 
 // endpoints: listar professores pela disciplina
-app.get('/v1/jengt_provest/profs/disciplina', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/profs/disciplina', cors(), async (request, response, next) => {
     // chama a função para retornar os dados do admin
     let dadosProfs = await controllerProf.getProfByDisc()
 
@@ -215,7 +215,7 @@ app.get('/v1/jengt_provest/profs/disciplina', cors(), async(request, response, n
 })
 
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/profs', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/profs', cors(), async (request, response, next) => {
     // chama a função para retornar os dados do admin
     let dadosProfs = await controllerProf.getListarProfessores()
 
@@ -224,7 +224,7 @@ app.get('/v1/jengt_provest/profs', cors(), async(request, response, next) => {
 })
 
 // endpoint: filtrar pelo nome
-app.get('/v1/jengt_provest/profs/filtro', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/profs/filtro', cors(), async (request, response, next) => {
     let filtro = request.query.nome
 
     // chama a função para retornar os dados do admin
@@ -235,7 +235,7 @@ app.get('/v1/jengt_provest/profs/filtro', cors(), async(request, response, next)
 })
 
 // endpoint: retorna os dados do aluno, filtrando pelo ID
-app.get('/v1/jengt_provest/prof/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/prof/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idProf = request.params.id
 
@@ -246,26 +246,26 @@ app.get('/v1/jengt_provest/prof/:id', cors(), async(request, response, next) => 
 })
 
 // endpoint: inserir novos alunos no Banco de Dados
-    // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/prof', cors(), bodyParserJSON, async(request, response, next) => {
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/prof', cors(), bodyParserJSON, async (request, response, next) => {
 
-        // recebe o content type da requisição (A API deve receber somente application/json)
-        let contentType = request.headers['content-type']
-        
-        //recebe os dados encaminhados na requisição no body(JSON)
-        let dadosBody = request.body
-        
-        // encaminha os dados da requisição para a controller enviar para o BD
-        let resultDados = await controllerProf.setNovoProfessor(dadosBody, contentType)
-        
-        response.status(resultDados.status_code)
-        
-        response.json(resultDados)
-    
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerProf.setNovoProfessor(dadosBody, contentType)
+
+    response.status(resultDados.status_code)
+
+    response.json(resultDados)
+
 })
 
 // endpoint: editar o status do aluno para false para "exclui-lo"
-app.put('/v1/jengt_provest/prof/excluir/:id', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/prof/excluir/:id', cors(), async (request, response, next) => {
     let prof = request.params.id
     let dadosProf = await controllerProf.setEditarExcluirProf(prof)
 
@@ -274,7 +274,7 @@ app.put('/v1/jengt_provest/prof/excluir/:id', cors(), async(request, response, n
 })
 
 // endpoint: editar o status do aluno para true para acha-lo
-app.put('/v1/jengt_provest/prof/ativar/:id', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/prof/ativar/:id', cors(), async (request, response, next) => {
     let prof = request.params.id
     let dadosProf = await controllerProf.setEditarAtivarProf(prof)
 
@@ -283,7 +283,7 @@ app.put('/v1/jengt_provest/prof/ativar/:id', cors(), async(request, response, ne
 })
 
 // endpoint: editar os dados do aluno
-app.put('/v1/jengt_provest/prof/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/prof/:id', cors(), bodyParserJSON, async (request, response, next) => {
     let prof = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -294,13 +294,13 @@ app.put('/v1/jengt_provest/prof/:id', cors(), bodyParserJSON, async(request, res
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerProf.setAtualizarProfessor(dadosBody, contentType, prof)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
 
 // endpoint: editar icone
-app.put('/v1/jengt_provest/icone/prof/', cors(), async(request, response, next) => {
+app.put('/v1/jengt_provest/icone/prof/', cors(), async (request, response, next) => {
 
     let icone = request.query.icone
     let prof = request.query.prof
@@ -311,7 +311,7 @@ app.put('/v1/jengt_provest/icone/prof/', cors(), async(request, response, next) 
 })
 
 // endpoint: editar a senha do aluno
-app.put('/v1/jengt_provest/prof/senha/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/prof/senha/:id', cors(), bodyParserJSON, async (request, response, next) => {
     let prof = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -322,14 +322,14 @@ app.put('/v1/jengt_provest/prof/senha/:id', cors(), bodyParserJSON, async(reques
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerProf.setAtualizarProfSenha(dadosBody, contentType, prof)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
 
 // endpoint: validacao de usuario
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/prof/entrar', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/prof/entrar', cors(), bodyParserJSON, async (request, response, next) => {
 
     // recebe o content type da requisição (A API deve receber somente application/json)
     let contentType = request.headers['content-type']
@@ -339,17 +339,17 @@ app.post('/v1/jengt_provest/prof/entrar', cors(), bodyParserJSON, async(request,
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerProf.getValidar(dadosBody, contentType)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
-    
+
 })
 /*************************************************************************/
 
 // #region EXERCICIOS
 /****************************** EXERCICIOS ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/exercicios', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/exercicios', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosExercicios = await controllerExercicio.getListarExercicios()
 
@@ -358,7 +358,7 @@ app.get('/v1/jengt_provest/exercicios', cors(), async(request, response, next) =
 })
 
 // endpoint: filtrar pelo topico
-app.get('/v1/jengt_provest/exercicios/:idTopico', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/exercicios/:idTopico', cors(), async (request, response, next) => {
     let idTopico = request.params.idTopico
 
     // chama a função para retornar os dados do admin
@@ -369,12 +369,12 @@ app.get('/v1/jengt_provest/exercicios/:idTopico', cors(), async(request, respons
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/exercicio/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/exercicio/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idExercicio = request.params.id
 
     let dadosExercicio = await controllerExercicio.getBuscarExercicio(idExercicio)
-    
+
     response.status(dadosExercicio.status_code)
     response.json(dadosExercicio)
 })
@@ -383,7 +383,7 @@ app.get('/v1/jengt_provest/exercicio/:id', cors(), async(request, response, next
 // #region ICONES
 /****************************** ICONES ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/icones', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/icones', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosIcones = await controllerIcones.getListarIcones()
 
@@ -398,7 +398,7 @@ app.get('/v1/jengt_provest/icones', cors(), async(request, response, next) => {
 
 // endpoint: inserir curso
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/curso/', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/curso/', cors(), bodyParserJSON, async (request, response, next) => {
 
     // recebe o content type da requisição (A API deve receber somente application/json)
     let contentType = request.headers['content-type']
@@ -408,14 +408,14 @@ app.post('/v1/jengt_provest/curso/', cors(), bodyParserJSON, async(request, resp
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerCurso.setNovoCurso(dadosBody, contentType)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
-    
+
 })
 
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/cursos', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/cursos', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosCursos = await controllerCurso.getListarCursos()
 
@@ -424,7 +424,7 @@ app.get('/v1/jengt_provest/cursos', cors(), async(request, response, next) => {
 })
 
 // endpoint: filtrar pelo nome
-app.get('/v1/jengt_provest/cursos/filtro', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/cursos/filtro', cors(), async (request, response, next) => {
     let filtro = request.query.nome
 
     // chama a função para retornar os dados do admin
@@ -435,7 +435,7 @@ app.get('/v1/jengt_provest/cursos/filtro', cors(), async(request, response, next
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/curso/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/curso/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idCurso = request.params.id
 
@@ -446,7 +446,7 @@ app.get('/v1/jengt_provest/curso/:id', cors(), async(request, response, next) =>
 })
 
 // endpoints: listar todos as disciplinas para seus cursos
-app.get('/v1/jengt_provest/cursos/disciplinas', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/cursos/disciplinas', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosCursos = await controllerCurso.getListarCursosDisciplinas()
 
@@ -455,7 +455,7 @@ app.get('/v1/jengt_provest/cursos/disciplinas', cors(), async(request, response,
 })
 
 // endpoint: retorna os dados, filtrando pelo ID do curso
-app.get('/v1/jengt_provest/curso/disciplinas/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/curso/disciplinas/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idCurso = request.params.id
 
@@ -466,7 +466,7 @@ app.get('/v1/jengt_provest/curso/disciplinas/:id', cors(), async(request, respon
 })
 
 // endpoints: listar professores pela disciplina
-app.get('/v1/jengt_provest/profs/disciplina/:idDisciplina', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/profs/disciplina/:idDisciplina', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idDisciplina = request.params.idDisciplina
 
@@ -480,7 +480,7 @@ app.get('/v1/jengt_provest/profs/disciplina/:idDisciplina', cors(), async(reques
 // #region TÓPICOS
 /****************************** TÓPICOS ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/topicos', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/topicos', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosTopicos = await controllerTopicos.getListarTopicos()
 
@@ -489,7 +489,7 @@ app.get('/v1/jengt_provest/topicos', cors(), async(request, response, next) => {
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/topico/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/topico/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idTopico = request.params.id
 
@@ -503,7 +503,7 @@ app.get('/v1/jengt_provest/topico/:id', cors(), async(request, response, next) =
 // #region NOTIFICAÇÕES
 /****************************** NOTIFICAÇÕES ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/notificacoes', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/notificacoes', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosNot = await controllerNot.getListarNotif()
 
@@ -512,7 +512,7 @@ app.get('/v1/jengt_provest/notificacoes', cors(), async(request, response, next)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/notificacao/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/notificacao/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idNotif = request.params.id
 
@@ -523,7 +523,7 @@ app.get('/v1/jengt_provest/notificacao/:id', cors(), async(request, response, ne
 })
 
 // endpoint: retorna os dados, filtrando pelo vestibular
-app.get('/v1/jengt_provest/notificacoes/filtro/:vest', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/notificacoes/filtro/:vest', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let filtro = request.params.vest
 
@@ -537,7 +537,7 @@ app.get('/v1/jengt_provest/notificacoes/filtro/:vest', cors(), async(request, re
 // #region TEMAS - REDAÇÃO
 /****************************** TEMAS - REDAÇÃO ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/temas', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/temas', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosTemas = await controllerTemas.getListarTemas()
 
@@ -546,7 +546,7 @@ app.get('/v1/jengt_provest/temas', cors(), async(request, response, next) => {
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/tema/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/tema/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idTema = request.params.id
 
@@ -556,9 +556,9 @@ app.get('/v1/jengt_provest/tema/:id', cors(), async(request, response, next) => 
     response.json(dadosTema)
 })
 
-    //#region REDACOES
+//#region REDACOES
 // endpoints: listar os alunos
-app.get('/v1/jengt_provest/redacoes', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/redacoes', cors(), async (request, response, next) => {
     // chama a função para retornar os dados do admin
     let dadosRedacao = await controllerRedacoes.getListarRedacoes()
 
@@ -567,7 +567,7 @@ app.get('/v1/jengt_provest/redacoes', cors(), async(request, response, next) => 
 })
 
 // endpoint: filtrar pelo nome
-app.get('/v1/jengt_provest/redacao/filtro', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/redacao/filtro', cors(), async (request, response, next) => {
     let filtro = request.query.titulo
 
     // chama a função para retornar os dados do admin
@@ -578,7 +578,7 @@ app.get('/v1/jengt_provest/redacao/filtro', cors(), async(request, response, nex
 })
 
 // endpoint: retorna os dados do aluno, filtrando pelo ID
-app.get('/v1/jengt_provest/redacao/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/redacao/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idRedacao = request.params.id
 
@@ -589,7 +589,7 @@ app.get('/v1/jengt_provest/redacao/:id', cors(), async(request, response, next) 
 })
 
 // endpoint: retorna os dados da redação, filtrando pelo ID do aluno
-app.get('/v1/jengt_provest/aluno/redacao/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/aluno/redacao/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idAluno = request.params.id
 
@@ -600,25 +600,25 @@ app.get('/v1/jengt_provest/aluno/redacao/:id', cors(), async(request, response, 
 })
 
 // endpoint: inserir novos alunos no Banco de Dados
-    // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/redacao', cors(), bodyParserJSON, async(request, response, next) => {
+// não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
+app.post('/v1/jengt_provest/redacao', cors(), bodyParserJSON, async (request, response, next) => {
 
-        // recebe o content type da requisição (A API deve receber somente application/json)
-        let contentType = request.headers['content-type']
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
 
-        //recebe os dados encaminhados na requisição no body(JSON)
-        let dadosBody = request.body
-    
-        // encaminha os dados da requisição para a controller enviar para o BD
-        let resultDados = await controllerRedacoes.setNovaRedacao(dadosBody, contentType)
-        //console.log(resultDados);
-        response.status(resultDados.status_code)
-        response.json(resultDados)
-    
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
+
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerRedacoes.setNovaRedacao(dadosBody, contentType)
+    //console.log(resultDados);
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+
 })
 
 // endpoint: editar os dados do aluno
-app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async (request, response, next) => {
     let redacao = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -629,123 +629,123 @@ app.put('/v1/jengt_provest/redacao/:id', cors(), bodyParserJSON, async(request, 
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerRedacoes.setAtualizarRedacao(dadosBody, contentType, redacao)
-    
+
     response.status(resultDados.status_code)
     response.json(resultDados)
 })
 
 //#region correção
-app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async(request, response, next) => {
-  
+app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async (request, response, next) => {
+
     const redacao = request.body
-  
-    const dadosBody = JSON.stringify({redacao})
+
+    const dadosBody = JSON.stringify({ redacao })
 
     console.log(dadosBody);
 
-  if (!dadosBody) {
-    return message.ERROR_INVALID_TEXT // 400
-  }
+    if (!dadosBody) {
+        return message.ERROR_INVALID_TEXT // 400
+    }
 
-  const { GoogleAIFileManager } = require("@google/generative-ai/server");
-  
-  const apiKey = "AIzaSyDUCeGhCXD2bNQ_Y_07j4Wd6QFUXMvWX4U";
-  const genAI = new GoogleGenerativeAI(apiKey);
-  
-  const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-pro",
-    systemInstruction: "A partir das competências, corrija as redações e atribua notas para cada competência e uma explicação da nota, gerando a nota total com dicas para melhorias",
-  });
-  
-  const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
-    maxOutputTokens: 8192,
-    responseMimeType: "text/plain",
-  }
-  
-const run = async() => {
-    const chatSession = model.startChat({
-          generationConfig
-    })
+    const { GoogleAIFileManager } = require("@google/generative-ai/server");
 
-    const redacao = dadosBody
-  
-    const result = await chatSession.sendMessage(redacao);
+    const apiKey = "AIzaSyDUCeGhCXD2bNQ_Y_07j4Wd6QFUXMvWX4U";
+    const genAI = new GoogleGenerativeAI(apiKey);
 
-    response.json(result)
+    const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-pro",
+        systemInstruction: "A partir das competências, corrija as redações e atribua notas para cada competência e uma explicação da nota, gerando a nota total com dicas para melhorias",
+    });
 
-    console.log(result.response.text());
-  }
-  
-  run()
+    const generationConfig = {
+        temperature: 1,
+        topP: 0.95,
+        topK: 64,
+        maxOutputTokens: 8192,
+        responseMimeType: "text/plain",
+    }
+
+    const run = async () => {
+        const chatSession = model.startChat({
+            generationConfig
+        })
+
+        const redacao = dadosBody
+
+        const result = await chatSession.sendMessage(redacao);
+
+        response.json(result)
+
+        console.log(result.response.text());
+    }
+
+    run()
 })
 /*************************************************************************/
 
 // #region CADERNO
 /****************************** CADERNO ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/caderno', cors(), async(request, response, next) => {
-  // chama a função para retornar os dados
-  let dadosAnot = await controllerCaderno.getListarAnotacoes()
+app.get('/v1/jengt_provest/caderno', cors(), async (request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosAnot = await controllerCaderno.getListarAnotacoes()
 
-  response.status(dadosAnot.status_code)
-  response.json(dadosAnot)
+    response.status(dadosAnot.status_code)
+    response.json(dadosAnot)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/caderno/:id', cors(), async(request, response, next) => {
-  // recebe o id da requisição do admin
-  let idAnotacao = request.params.id
+app.get('/v1/jengt_provest/caderno/:id', cors(), async (request, response, next) => {
+    // recebe o id da requisição do admin
+    let idAnotacao = request.params.id
 
-  let dadosAnot = await controllerCaderno.getBuscarAnotacao(idAnotacao)
+    let dadosAnot = await controllerCaderno.getBuscarAnotacao(idAnotacao)
 
-  response.status(dadosAnot.status_code)
-  response.json(dadosAnot)
+    response.status(dadosAnot.status_code)
+    response.json(dadosAnot)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID do aluno
-app.get('/v1/jengt_provest/caderno/aluno/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/caderno/aluno/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idAluno = request.params.id
-  
+
     let dadosAnot = await controllerCaderno.getAnotacaoByIdAluno(idAluno)
-  
+
     response.status(dadosAnot.status_code)
     response.json(dadosAnot)
-  })
+})
 
 // endpoint: retorna os dados, filtrando pelo titulo
-app.get('/v1/jengt_provest/caderno/filtro/:titulo', cors(), async(request, response, next) => {
-  // recebe o id da requisição do admin
-  let filtro = request.params.titulo
+app.get('/v1/jengt_provest/caderno/filtro/:titulo', cors(), async (request, response, next) => {
+    // recebe o id da requisição do admin
+    let filtro = request.params.titulo
 
-  let dadosAnot = await controllerCaderno.getAnotByTitulo(filtro)
+    let dadosAnot = await controllerCaderno.getAnotByTitulo(filtro)
 
-  response.status(dadosAnot.status_code)
-  response.json(dadosAnot)
+    response.status(dadosAnot.status_code)
+    response.json(dadosAnot)
 })
 
 // endpoint: inserir novas anotações no Banco de Dados
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/caderno', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/caderno', cors(), bodyParserJSON, async (request, response, next) => {
 
-        // recebe o content type da requisição (A API deve receber somente application/json)
-        let contentType = request.headers['content-type']
+    // recebe o content type da requisição (A API deve receber somente application/json)
+    let contentType = request.headers['content-type']
 
-        //recebe os dados encaminhados na requisição no body(JSON)
-        let dadosBody = request.body
+    //recebe os dados encaminhados na requisição no body(JSON)
+    let dadosBody = request.body
 
-        // encaminha os dados da requisição para a controller enviar para o BD
-        let resultDados = await controllerCaderno.setNovaAnotacao(dadosBody, contentType)
+    // encaminha os dados da requisição para a controller enviar para o BD
+    let resultDados = await controllerCaderno.setNovaAnotacao(dadosBody, contentType)
 
-        response.status(resultDados.status_code)
-        response.json(resultDados)
+    response.status(resultDados.status_code)
+    response.json(resultDados)
 })
 
 // endpoint: editar os dados da anotação
-app.put('/v1/jengt_provest/caderno/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v1/jengt_provest/caderno/:id', cors(), bodyParserJSON, async (request, response, next) => {
     let anotacao = request.params.id
 
     // recebe o content type da requisição (A API deve receber somente application/json)
@@ -765,41 +765,41 @@ app.put('/v1/jengt_provest/caderno/:id', cors(), bodyParserJSON, async(request, 
 // #region INSTITUIÇÕES
 /****************************** INSTITUIÇÕES ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/instituicoes', cors(), async(request, response, next) => {
-  // chama a função para retornar os dados
-  let dadosInst = await controllerInstituicoes.getListarInstituicoes()
+app.get('/v1/jengt_provest/instituicoes', cors(), async (request, response, next) => {
+    // chama a função para retornar os dados
+    let dadosInst = await controllerInstituicoes.getListarInstituicoes()
 
-  response.status(dadosInst.status_code)
-  response.json(dadosInst)
+    response.status(dadosInst.status_code)
+    response.json(dadosInst)
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/instituicao/:id', cors(), async(request, response, next) => {
-  // recebe o id da requisição do admin
-  let idInst = request.params.id
+app.get('/v1/jengt_provest/instituicao/:id', cors(), async (request, response, next) => {
+    // recebe o id da requisição do admin
+    let idInst = request.params.id
 
-  let dadosInst = await controllerInstituicoes.getBuscarInstituicao(idInst)
+    let dadosInst = await controllerInstituicoes.getBuscarInstituicao(idInst)
 
-  response.status(dadosInst.status_code)
-  response.json(dadosInst)
+    response.status(dadosInst.status_code)
+    response.json(dadosInst)
 })
 
 // endpoint: retorna os dados, filtrando pela sigla
-app.get('/v1/jengt_provest/instituicoes/filtro/:sigla', cors(), async(request, response, next) => {
-  // recebe o id da requisição do admin
-  let filtro = request.params.sigla
+app.get('/v1/jengt_provest/instituicoes/filtro/:sigla', cors(), async (request, response, next) => {
+    // recebe o id da requisição do admin
+    let filtro = request.params.sigla
 
-  let dadosInst = await controllerInstituicoes.getInstituicaoBySigla(filtro)
+    let dadosInst = await controllerInstituicoes.getInstituicaoBySigla(filtro)
 
-  response.status(dadosInst.status_code)
-  response.json(dadosInst)
+    response.status(dadosInst.status_code)
+    response.json(dadosInst)
 })
 /*************************************************************************/
 
 // #region VIDEOAULAS
 /****************************** VIDEOAULAS ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/videoaulas', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/videoaulas', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosVideoaula = await controllerVideoaulas.getListarVideoaulas()
 
@@ -808,7 +808,7 @@ app.get('/v1/jengt_provest/videoaulas', cors(), async(request, response, next) =
 })
 
 // endpoint: filtrar pelo topico
-app.get('/v1/jengt_provest/videoaulas/:idTopico', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/videoaulas/:idTopico', cors(), async (request, response, next) => {
     let idTopico = request.params.idTopico
 
     // chama a função para retornar os dados do admin
@@ -819,19 +819,19 @@ app.get('/v1/jengt_provest/videoaulas/:idTopico', cors(), async(request, respons
 })
 
 // endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/videoaula/:id', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/videoaula/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idVideoaula = request.params.id
 
     let dadosVideoaula = await controllerVideoaulas.getBuscarVideoaula(idVideoaula)
-    
+
     response.status(dadosVideoaula.status_code)
     response.json(dadosVideoaula)
 })
 
 // endpoint: inserir novas videoaulas no Banco de Dados
 // não esquecer de colocar o bodyParserJSON que é quem define o formato de chegada dos dados
-app.post('/v1/jengt_provest/videoaula', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v1/jengt_provest/videoaula', cors(), bodyParserJSON, async (request, response, next) => {
 
     // recebe o content type da requisição (A API deve receber somente application/json)
     let contentType = request.headers['content-type']
@@ -850,49 +850,49 @@ app.post('/v1/jengt_provest/videoaula', cors(), bodyParserJSON, async(request, r
 // #region FASES
 /****************************** FASES ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/fases', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/fases', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosFase = await controllerFases.getListarFases()
-  
+
     response.status(dadosFase.status_code)
     response.json(dadosFase)
-  })
-  
-  // endpoint: retorna os dados, filtrando pelo ID
-  app.get('/v1/jengt_provest/fase/:id', cors(), async(request, response, next) => {
+})
+
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/fase/:id', cors(), async (request, response, next) => {
     // recebe o id da requisição do admin
     let idFase = request.params.id
-  
-    let dadosFase = await controllerFases.getBuscarFase(idFase)  
+
+    let dadosFase = await controllerFases.getBuscarFase(idFase)
     response.status(dadosFase.status_code)
     response.json(dadosFase)
-  })
+})
 /*************************************************************************/
 
 // #region VESTIBULAR
 /****************************** VESTIBULAR - VEST-FASES ****************************/
 // endpoints: listar tudo
-app.get('/v1/jengt_provest/vest_fases', cors(), async(request, response, next) => {
+app.get('/v1/jengt_provest/vest_fases', cors(), async (request, response, next) => {
     // chama a função para retornar os dados
     let dadosVestFase = await controllerVestFases.getListarVestFases()
-  
+
     response.status(dadosVestFase.status_code)
     response.json(dadosVestFase)
-  })
-  
-// endpoint: retorna os dados, filtrando pelo ID
-app.get('/v1/jengt_provest/vest_fases/:id', cors(), async(request, response, next) => {
-// recebe o id da requisição do admin
-let idVestFase = request.params.id
+})
 
-let dadosVestFase = await controllerVestFases.getBuscarVestFases(idVestFase)  
-response.status(dadosVestFase.status_code)
-response.json(dadosVestFase)
+// endpoint: retorna os dados, filtrando pelo ID
+app.get('/v1/jengt_provest/vest_fases/:id', cors(), async (request, response, next) => {
+    // recebe o id da requisição do admin
+    let idVestFase = request.params.id
+
+    let dadosVestFase = await controllerVestFases.getBuscarVestFases(idVestFase)
+    response.status(dadosVestFase.status_code)
+    response.json(dadosVestFase)
 })
 
 // endpoint: filtrar pelo nome
-app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async(request, response, next) => {
-    
+app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async (request, response, next) => {
+
     let filtroInst = request.query.instituicao
     let filtroData = request.query.data
 
@@ -904,8 +904,55 @@ app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async(request, resp
 })
 /*************************************************************************/
 
+// #region CRONOGRAMA
+/****************************** CRONOGRAMA ****************************/
+app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON, async (request, response, next) => {
+
+    const cronograma = request.body
+
+    const dadosBody = JSON.stringify({ cronograma })
+
+    if (!dadosBody) {
+        return message.ERROR_INVALID_TEXT // 400
+    }
+
+    const { GoogleAIFileManager } = require("@google/generative-ai/server");
+
+    const apiKey = "AIzaSyDUCeGhCXD2bNQ_Y_07j4Wd6QFUXMvWX4U";
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: "monte um cronograma com as disciplinas necessárias para passar nos vestibulares, com duração, cronograma por semana e dicas APENAS",
+    });
+
+    const generationConfig = {
+        temperature: 1,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 8192,
+        responseMimeType: "text/plain",
+    };
+
+    const run = async () => {
+        const chatSession = model.startChat({
+            generationConfig
+        })
+
+        const cronograma = dadosBody
+
+        const result = await chatSession.sendMessage(cronograma);
+
+        response.json(result)
+
+        console.log(result.response.text());
+    }
+
+    run()
+})
+/*************************************************************************/
 
 var port = process.env.PORT || 3000
-app.listen(port,function(){
-    console.log('API Funcionando e aguardando requisições\nPorta: '+port)
+app.listen(port, function () {
+    console.log('API Funcionando e aguardando requisições\nPorta: ' + port)
 })
