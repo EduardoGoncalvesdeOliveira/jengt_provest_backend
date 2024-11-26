@@ -132,7 +132,10 @@ const selectDisciplinasByProfId = async(id) => {
 // get: listar todos os profs
 const selectAllProfessores = async () => {
     try {
-        let sql = 'select id, nome, email, senha, status from tbl_professor order by id desc'
+        let sql = `select tp.id, tp.nome, tp.email, td.nome from tbl_professor as tp
+                    inner join tbl_prof_disciplinas on tbl_prof_disciplinas.professor_id=tp.id
+                    inner join tbl_disciplina as td on tbl_prof_disciplinas.disciplina_id=td.id
+                    order by tp.id desc`
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
