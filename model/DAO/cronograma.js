@@ -12,36 +12,6 @@ const { PrismaClient } = require('@prisma/client')
 // instanciando o objeto prisma com as caracteristicas do prisma client
 const prisma = new PrismaClient()
 
-//  post: inserir
-const insertCronograma = async(dadosRedacao) => {
-    try {
-        let sql
-
-        sql = `insert into tbl_redacao (titulo, texto, tema_id, aluno_id, status)values(
-                '${dadosRedacao.titulo}',
-                '${dadosRedacao.texto}',
-                ${dadosRedacao.tema_id},
-                ${dadosRedacao.aluno_id},
-               true
-            )`
-            
-            // executa o sciptSQL no DB (devemos usar o comando execute e não o query)
-            // o comando execute deve ser utilizado para INSERT, UPDATE, DELETE
-            let result = await prisma.$executeRawUnsafe(sql)
-
-            // validação para verificar se o insert funcionou no DB
-        if(result){
-            return true
-        } else {
-            return false
-        }
-
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}
-
 // get: listar todos as redacoes
 const selectAllRedacoes = async () => {
 
@@ -123,7 +93,6 @@ const selectByAlunoIdRedacao = async (id) => {
 }
 
 module.exports={
-    insertCronograma,
     selectAllRedacoes,
     selectByIdRedacao,
     selectLastId,
