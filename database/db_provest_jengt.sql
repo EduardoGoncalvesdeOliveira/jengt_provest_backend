@@ -504,3 +504,32 @@ CREATE TABLE tbl_lembretes (
 ALTER TABLE tbl_lembretes
 ADD CONSTRAINT fk_aluno
 FOREIGN KEY (aluno_id) REFERENCES tbl_aluno(id);
+
+create table tbl_cronograma
+(
+	id int auto_increment primary key not null,
+	aluno_id int,
+    
+    foreign key (aluno_id) references tbl_aluno(id)
+);
+
+create table tbl_cron_semana
+(
+	id int auto_increment primary key not null,
+    carga_horaria time,
+    semana_id int,
+    cronograma_id int,
+    
+    foreign key (semana_id) references tbl_semana(id),
+    foreign key (cronograma_id) references tbl_cronograma(id)
+);
+
+create table tbl_cron_semana_disciplina
+(
+	id int auto_increment primary key not null,
+    cron_semana_id int,
+    disciplina_id int,
+    
+    foreign key (cron_semana_id) references tbl_cron_semana(id),
+    foreign key (disciplina_id) references tbl_disciplina(id)
+);
