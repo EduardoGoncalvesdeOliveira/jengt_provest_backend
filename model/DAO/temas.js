@@ -31,7 +31,7 @@ const selectByIdTema = async (id) => {
 const selectAllTemas = async () => {
 
     try {
-        let sql = `select id, nome, descricao from tbl_tema order by id desc`
+        let sql = `select id, nome from tbl_tema order by id desc`
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
         
