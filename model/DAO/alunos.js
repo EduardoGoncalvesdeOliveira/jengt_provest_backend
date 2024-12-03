@@ -76,7 +76,6 @@ const updateIcone = async(idIcone, id) => {
         let sql = `call updateIconeAluno(${idIcone}, ${id})`
 
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável
-        console.log(sql);
         let rsAluno = await prisma.$executeRawUnsafe(sql)
         return rsAluno
 

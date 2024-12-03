@@ -54,7 +54,7 @@ const updateRedacao = async(dadosRedacao, id) => {
                                             where id = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
-        console.log(result);
+
         // validação para verificar se o insert funcionou no DB
         if(result){
             return true

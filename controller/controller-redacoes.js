@@ -29,7 +29,6 @@ const setNovaRedacao = async(dadosRedacao, contentType) => {
                 ){    
                  return message.ERROR_REQUIRED_FIELDS // 400      
                 } else {
-                    console.log(dadosRedacao);
                     //envia os dados para o DAO inserir no BD
                 let novaRedacao = await redacaoDAO.insertRedacoes(dadosRedacao)
                 //validação para verificar se os dados foram inseridos pelo DAO no BD

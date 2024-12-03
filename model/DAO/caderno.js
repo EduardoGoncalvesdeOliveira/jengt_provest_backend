@@ -79,7 +79,6 @@ const selectAllAnotacoes = async () => {
     
         // executa o scriptSQL no BD e recebe o retorno dos dados na variável rsAdmin
         let rsAnot = await prisma.$queryRawUnsafe(sql)
-        console.log(rsAnot)
         return rsAnot
 
     } catch (error) {

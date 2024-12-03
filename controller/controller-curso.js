@@ -96,36 +96,22 @@ const setNovoCurso = async (dadosCurso, contentType) => {
                 return message.ERROR_REQUIRED_FIELDS // 400      
             } else {
 
-                
-                
-                // if (dadosCurso.disciplinas) {
-                //     dadosCurso.disciplinas.forEach((disc) => {
-                //         let validacaoDisc = controller.getDiscById(disc)
-                //         if (!validacaoDisc) {
-                //             return message.ERROR_INVALID_PARAM
-                //         }
-                //     })
-                // }
-                console.log('bustiquinha veia');
-
                 //envia os dados para o DAO inserir no BD
-                let cuso = await cursoDAO.insertCurso(dadosCurso)
-                console.log('OIA AQUI O CUSO' + cuso);
-                
+                let curso = await cursoDAO.insertCurso(dadosCurso)               
 
                 //validação para verificar se os dados foram inseridos pelo DAO no BD
-                if (cuso) {
+                if (curso) {
 
                     let id = await cursoDAO.selectLastId()                    
 
                     dadosCurso.disciplinas.forEach(async (cusinho) => {
-                        await cursoDAO.insertDisciplinaCurso(id[0].id, cusinho)
+                        await cursoDAO.insertDisciplinaCurso(id[0].id, cursinho)
                     })
                     // cria o padrão de JSON para retorno dos dados criados no DB
                     resultDadosCurso.status = message.SUCCESS_CREATED_ITEM.status
                     resultDadosCurso.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     resultDadosCurso.message = message.SUCCESS_CREATED_ITEM.message
-                    resultDadosCurso.cuso = dadosCurso
+                    resultDadosCurso.curso = dadosCurso
                     return resultDadosCurso
                 }
             }

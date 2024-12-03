@@ -613,7 +613,7 @@ app.post('/v1/jengt_provest/redacao', cors(), bodyParserJSON, async (request, re
 
     // encaminha os dados da requisição para a controller enviar para o BD
     let resultDados = await controllerRedacoes.setNovaRedacao(dadosBody, contentType)
-    //console.log(resultDados);
+   
     response.status(resultDados.status_code)
     response.json(resultDados)
 
@@ -642,8 +642,6 @@ app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async (re
     const redacao = request.body
 
     const dadosBody = JSON.stringify({ redacao })
-
-    console.log(dadosBody);
 
     if (!dadosBody) {
         return message.ERROR_INVALID_TEXT // 400
