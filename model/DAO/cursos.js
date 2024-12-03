@@ -182,7 +182,7 @@ const selectDiscByCurso = async (id) => {
     try {
         
         // realiza a busca do curso pelo id
-        let sql = `select tbl_cursos_disciplina.id, tbl_disciplina.nome as disciplina, tbl_cursos.nome as curso from tbl_cursos_disciplina 
+        let sql = `select tbl_cursos_disciplina.id, tbl_disciplina.nome as disciplina, tbl_disciplina.id as id_disciplina, tbl_cursos.nome as curso from tbl_cursos_disciplina 
                     inner join tbl_cursos on tbl_cursos_disciplina.curso_id=tbl_cursos.id
                     inner join tbl_disciplina on tbl_cursos_disciplina.disciplina_id=tbl_disciplina.id 
                     where tbl_cursos.id=${id}`

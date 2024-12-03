@@ -146,15 +146,15 @@ const getListarCursosDisciplinas = async () => {
     if (dadosCursoDisc) {
         if (dadosCursoDisc.length > 0) {
 
-            let cuzinho = []
+            let cursinho = []
             const promise = dadosCursoDisc.map(async (curso) => {
-                cuzinho.push(await getDisciplinaByCurso(curso.id))      
+                cursinho.push(await getDisciplinaByCurso(curso.id))  
             })
 
             await Promise.all(promise)
             
-            cursoDiscJSON.curso_disciplina = cuzinho
-            cursoDiscJSON.qt = cuzinho.length
+            cursoDiscJSON.curso_disciplina = cursinho
+            cursoDiscJSON.qt = cursinho.length
             cursoDiscJSON.status_code = 200
             return cursoDiscJSON
         } else {
@@ -189,9 +189,12 @@ const getDisciplinaByCurso = async (id) => {
                 // como ele retorna um array, precisamos retornar algum valor pra preencher esse array
                 // ali a gente está retornando o atributo disciplina do objeto disciplina (item que está dentro do array)
                 let disciplinas = disciplinasCurso.map((disciplina) => {
-                    return disciplina.disciplina
-                })        
-                
+                    return {
+                        "id_disciplina": disciplina.id_disciplina,
+                        "disciplina": disciplina.disciplina
+                    }
+                })
+                                
                 cursoDiscJSON.id = idCurso
                 cursoDiscJSON.curso = disciplinasCurso[0].curso
                 cursoDiscJSON.disciplinas = disciplinas
