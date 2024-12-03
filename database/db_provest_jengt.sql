@@ -6,8 +6,7 @@ use db_jengt_provest;
 create table tbl_tema
 (
 	id integer primary key auto_increment not null,
-    nome varchar(255) not null,
-    descricao varchar (255) not null
+    nome varchar(255) not null
 );
 
 create table tbl_redacao
@@ -16,9 +15,11 @@ create table tbl_redacao
     titulo varchar(70) not null,
     texto text not null,
     tema_id int not null,
+    aluno_id int not null,
     status boolean,
     
-    foreign key (tema_id) references tbl_tema (id)
+    foreign key (tema_id) references tbl_tema (id),
+    foreign key (aluno_id) references tbl_aluno (id)
 );
 
 create table tbl_cursos
