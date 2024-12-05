@@ -31,7 +31,7 @@ const selectByIdIcone = async (id) => {
 const selectAllIcones = async () => {
 
     try {
-        let sql = `select tbl_icones.id, tbl_icones.url from tbl_icones order by id desc`
+        let sql = `select tbl_icones.id, tbl_icones.url from tbl_icones where status=true order by id desc`
     
         // $queryrawUnsafe(‘encaminha apenas a variavel’)
         // $queryRaw(‘codigo digitado aqui’)
