@@ -142,7 +142,7 @@ const selectByIdAluno = async (id) => {
     try {
 
         // realiza a busca do aluno pelo id
-        let sql = `select tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
+        let sql = `select tbl_aluno.id, tbl_aluno.nome, tbl_aluno.email, tbl_aluno.senha, tbl_cursos.nome as curso, tbl_aluno.status from tbl_aluno
                     inner join tbl_cursos on tbl_aluno.curso_id=tbl_cursos.id 
                     where tbl_aluno.id=${id}`
 
