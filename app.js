@@ -649,7 +649,7 @@ app.post('/v1/jengt_provest/correcao/redacao', cors(), bodyParserJSON, async (re
 
     const { GoogleAIFileManager } = require("@google/generative-ai/server");
 
-    const apiKey = "AIzaSyDUCeGhCXD2bNQ_Y_07j4Wd6QFUXMvWX4U";
+    const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
 
     const model = genAI.getGenerativeModel({
