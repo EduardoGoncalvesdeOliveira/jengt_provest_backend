@@ -69,7 +69,8 @@ const controllerInstituicoes = require('./controller/controller-instituicoes.js'
 const controllerVideoaulas = require('./controller/controller-videoaulas.js')
 const controllerFases = require('./controller/controller-fases.js')
 const controllerVestFases = require('./controller/controller-vestFases.js')
-const controllerCalendario = require('./controller/controller-calendario.js')
+//const controllerCalendario = require('./controller/controller-calendario.js')
+const controllerCronograma = require('./controller/controller-cronograma.js')
 /*********************************************************************************/
 
 // #region ALUNO
@@ -904,51 +905,60 @@ app.get('/v1/jengt_provest/fases/vest_fases/filtro', cors(), async (request, res
 })
 /*************************************************************************/
 
-// #region CRONOGRAMA ia
+// #region CRONOGRAMA
 /****************************** CRONOGRAMA ****************************/
-app.post('/v1/jengt_provest/cronograma/montarCronograma', cors(), bodyParserJSON, async (request, response, next) => {
+app.get('/v1/jengt_provest/cronograma/:id', cors(), bodyParserJSON, async (request, response, next) => {
 
-    const cronograma = request.body
+//     const cronograma = request.body
 
-    const dadosBody = JSON.stringify({ cronograma })
+//     const dadosBody = JSON.stringify({ cronograma })
 
-    if (!dadosBody) {
-        return message.ERROR_INVALID_TEXT // 400
-    }
+//     if (!dadosBody) {
+//         return message.ERROR_INVALID_TEXT // 400
+//     }
 
-    const { GoogleAIFileManager } = require("@google/generative-ai/server");
+//     const { GoogleAIFileManager } = require("@google/generative-ai/server");
 
-    const apiKey = "AIzaSyDUCeGhCXD2bNQ_Y_07j4Wd6QFUXMvWX4U";
-    const genAI = new GoogleGenerativeAI(apiKey);
+//     const apiKey = process.env.GEMINI_API_KEY;
+//     const genAI = new GoogleGenerativeAI(apiKey);
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        systemInstruction: "seguindo o modelo, crie um cronograma de estudos para passar no vestibular, curso e instituições indicadas, conforme a disponibilidade dada",
-    });
+//     const model = genAI.getGenerativeModel({
+//         model: "gemini-1.5-flash",
+//         systemInstruction: "seguindo o modelo, crie um cronograma de estudos para passar no vestibular, curso e instituições indicadas, conforme a disponibilidade dada",
+//     });
 
-    const generationConfig = {
-        temperature: 1,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 8192,
-        responseMimeType: "text/plain",
-      };
+//     const generationConfig = {
+//         temperature: 1,
+//         topP: 0.95,
+//         topK: 40,
+//         maxOutputTokens: 8192,
+//         responseMimeType: "text/plain",
+//       };
 
-    const run = async () => {
-        const chatSession = model.startChat({
-            generationConfig
-        })
+//     const run = async () => {
+//         const chatSession = model.startChat({
+//             generationConfig
+//         })
 
-        const cronograma = dadosBody
+//         const cronograma = dadosBody
 
-        const result = await chatSession.sendMessage(cronograma);
+//         const result = await chatSession.sendMessage(cronograma);
 
-        response.json(result)
+//         response.json(result)
 
-        console.log(result.response.text());
-    }
+//         console.log(result.response.text());
+//     }
 
-    run()
+//     run()
+
+// recebe o id da requisição do admin
+    let idAluno = request.params.id
+
+    let dadosCronograma = await controllerCronograma.getBuscarCronogramaByAlunoId(idAluno)
+
+    response.status(dadosCronograma.status_code)
+    response.json(dadosCronograma)
+
 })
 /*************************************************************************/
 
